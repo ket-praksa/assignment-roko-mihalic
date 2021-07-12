@@ -53,6 +53,7 @@ class Session(hat.event.server.common.ModuleSession):
         return self._async_group
 
     async def process(self, changes):
+        
         return [
             self._engine.create_process_event(
                 self._source,

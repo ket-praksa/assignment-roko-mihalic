@@ -49,8 +49,10 @@ class Adapter(hat.gui.common.Adapter):
                 data = json.loads(e.payload.data)
                 bus, line, switch = [], [], []
                 for i in range (len(data)):
-                    eachDataFromJson = json.loads(data[i])
-                    asduAddress = eachDataFromJson["asdu_address"]
+                    # eachDataFromJson = json.loads(data[i])
+                    if data[i]["value"] == "Nan":
+                        data[i]["value"] = 0
+                    asduAddress = data[i]["asdu_address"]
                     if asduAddress < 10:
                         bus.append(data[i])
                     elif asduAddress < 20:
@@ -60,12 +62,12 @@ class Adapter(hat.gui.common.Adapter):
                     else:
                         switch.append(data[i])
 
-                busJson = json.dumps(bus)
-                lineJson = json.dumps(line)
-                transformerJson = json.dumps(transformer)
-                switchJson = json.dumps(switch)
+                #busJson = json.dumps(bus)
+                #lineJson = json.dumps(line)
+                #transformerJson = json.dumps(transformer)
+                #switchJson = json.dumps(switch)
                 #if e.event_type == ('simulator', ): #changed, myb counter also
-                self._state = dict(self._state, bus = busJson, line = lineJson, transformer = transformerJson, switch = switchJson)
+                self._state = dict(self._state, bus = bus, line = line, transformer = transformer, switch = switch)
 
                 self._state_change_cb_registry.notify()
 
@@ -85,7 +87,19 @@ class Session(hat.gui.common.AdapterSession):
     async def _run(self):
         self._on_state_change()
         with self._adapter.subscribe_to_state_change(self._on_state_change):
-            await self.wait_closing()
+            while(True):
+                data = await self._juggler_client.receive()
+                self._adapter._event_client.register(([
+                    hat.event.common.RegisterEvent(
+                    event_type=('gateway', 'gateway', 'simulator', 'device',
+                                'system', 'simulator'),
+                    source_timestamp=None,
+                    payload=hat.event.common.EventPayload(
+                        type=hat.event.common.EventPayloadType.JSON,
+                        data=data))]))
+
+
+            # await self.wait_closing()
 
     def _on_state_change(self):
         self._juggler_client.set_local_data(self._adapter.state)
