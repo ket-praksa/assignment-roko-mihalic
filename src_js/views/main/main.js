@@ -1,17 +1,22 @@
 import 'main/index.scss';
 
-// function testFunction(i){
-//     console.log(`Hello i pressed ${i}. button`);
-// }
+function testFunction(i){
+    console.log(`Hello i pressed ${i}. button`);
+}
 
 function changeState(changedSwitch){
     console.log("pogodio")
+
     let changedSwitchValue = r.get('remote', 'adapter', 'switch', changedSwitch, "value");
-    console.log(changedSwitchValue)
-    console.log( 1- changedSwitchValue)
+    let changedSwitchIO = r.get('remote', 'adapter', 'switch', changedSwitch, "io_address");
+
+    console.log(changedSwitchValue);
+    console.log(1 - changedSwitchValue);
 
     // r.set(['remote', 'adapter', 'switch', changedSwitch, "value"], 1-changedSwitchValue);
-    hat.conn.send('adapter', {asdu: changedSwitch+30, value: 1 - changedSwitchValue });
+    hat.conn.send('adapter', {asdu: changedSwitch+30,
+                              value: 1 - changedSwitchValue,
+                              io: changedSwitchIO});
 
     //console.log('AAAAAAAAAAAAAA',switchArrayFun)
     //let switchToChange = JSON.parse(switchArrayFun[changedSwitch]);
@@ -26,9 +31,11 @@ function changeState(changedSwitch){
 
 export function vt() {
     console.log("ping")
+    // prevents undefined text on screen
     if (!(r.get('remote'))){
         return ['div'];
     }
+
     let busArray = r.get('remote', 'adapter', 'bus');
     let lineArray = r.get('remote', 'adapter', 'line');
     let transformer = r.get('remote', 'adapter', 'transformer');
@@ -38,40 +45,12 @@ export function vt() {
     // console.log(transformer)
     // console.log(switchArray)
 
-    // let idk = r.get('remote', 'adapter', 'switch', 1, "value");
-    // console.log(idk)
-
-    
-    // let bus = []
-    // for(let i = 0; busArray.length; i++){
-    //     bus[i] = busArray[]
-    // }
-    // let thirdswitch = undefined;
-    // if(switchArray != undefined){
-    //     //console.log(switchArray);
-    //     // console.log(typeof(switchArray));
-    //     thirdswitch = (JSON.parse(switchArray[3]))["value"];
-    //     //console.log(thirdswitch);
-    // }
-    // console.log('aaaaaaaaaaaaaaaaa2' + thirdswitch)
-    // console.log('aaaaaaaaaaaaaaaaa3' + typeof(thirdswitch))
-    // console.log('aaaaaaaaaaaaaaaaa4' + busArray)
-    // console.log('aaaaaaaaaaaaaaaaa5' + transformerJson)
-    // let busArray = undefined
-    // if(busArray != undefined){
-    //     busArray = JSON.parse(busArray)
-    // }
-    //console.log(busArray)
-    // for(let each in busArray){
-    //     let data = JSON.parse(each)
-    //     //console.log(data)
-    // }
-
     return ['div.main',
             ['div.class1',`bus: ${JSON.stringify(busArray)}`],
             ['div.class2',`line: ${JSON.stringify(lineArray)}`],
             ['div.class3',`transformer:  ${JSON.stringify(transformer)}`],
             ['div.class4',`switch: ${JSON.stringify(switchArray)}`],
+
             ['svg', {'attrs': {'version': '1.1', 'width': '774px', 'height': '302px', 'viewBox': '-0.5 -0.5 774 302', 'style': 'background-color: rgb(255, 255, 255);'}},
                 ['g',
                     ['path', {'attrs': {'d': 'M 53 140 L 15.24 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'stroke'}}],
@@ -83,7 +62,9 @@ export function vt() {
                     ['path', {'attrs': {'d': 'M 213 180 L 213 100', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10', 'pointer-events': 	'stroke'}}],
                     ['path', {'attrs': {'d': 'M 213 140 L 237 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     // switch0
-                    ['path', {'attrs': {'d': `M 237 140 L 261 ${switchArray[0]["value"] == 0 ? 130 : 139}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => changeState(0)}}],
+                    ['rect', {'attrs': {'x': '237.2', 'y': '125', 'width': '30', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(0)}}],
+                    ['path', {'attrs': {'d': `M 237 140 L 261 ${switchArray[0]["value"] == 0 ? 130 : 139}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
+                   
 
                     ['path', {'attrs': {'d': 'M 293 140 L 261 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     ['path', {'attrs': {'d': 'M 293 180 L 293 100', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
@@ -138,7 +119,8 @@ export function vt() {
                     ['path', {'attrs': {'d': 'M 413 140 L 403 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     ['path', {'attrs': {'d': 'M 413 140 L 437 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     //switch1
-                    ['path', {'attrs': {'d': `M 437 140 L 461 ${switchArray[1]["value"] == 0 ? 130 : 139}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => changeState(1)}}],
+                    ['rect', {'attrs': {'x': '437', 'y': '115', 'width': '30', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(1)}}],
+                    ['path', {'attrs': {'d': `M 437 140 L 461 ${switchArray[1]["value"] == 0 ? 130 : 139}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
 
                     ['path', {'attrs': {'d': 'M 493 140 L 461 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
@@ -256,10 +238,10 @@ export function vt() {
                                         ['div', {'attrs': {'style': 'display: inline-block; font-size: 12px; font-family: Helvetica; color: #006600; line-height: 1.2; pointer-events: none; 	white-space: normal; word-wrap: normal; '}}, '1']]]],
                             ['text', {'attrs': {'x': '453', 'y': '119', 'fill': '#006600', 'font-family': 'Helvetica', 'font-size': '12px', 'text-anchor': 'middle'}}, '1']]],
 
-                    ['path', {'attrs': {'d': 'M 493 60 L 505 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     //switch2
-                    ['path', {'attrs': {'d': `M 505 60 L 517 ${switchArray[2]["value"] == 0 ? 50 : 59}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => changeState(2)}}],
-
+                    ['rect', {'attrs': {'x': '503', 'y': '40', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(2)}}],
+                    ['path', {'attrs': {'d': 'M 493 60 L 505 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': `M 505 60 L 517 ${switchArray[2]["value"] == 0 ? 50 : 59}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
                     ['path', {'attrs': {'d': 'M 533 60 L 517 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
                     ['g', {'attrs': {'transform': 'translate(-0.5 -0.5)'}},
@@ -270,10 +252,10 @@ export function vt() {
                                         ['div', {'attrs': {'style': 'display: inline-block; font-size: 12px; font-family: Helvetica; color: #006600; line-height: 1.2; pointer-events: none; 	white-space: normal; word-wrap: normal; '}}, '2']]]],
                             ['text', {'attrs': {'x': '513', 'y': '44', 'fill': '#006600', 'font-family': 'Helvetica', 'font-size': '12px', 'text-anchor': 'middle'}}, '2']]],
 
-                    ['path', {'attrs': {'d': 'M 613 60 L 625 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     //switch3
-                    ['path', {'attrs': {'d': `M 625 60 L 637 ${switchArray[3]["value"] == 0 ? 50 : 59}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => changeState(3)}}],
-
+                    ['rect', {'attrs': {'x': '623', 'y': '40', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(3)}}],
+                    ['path', {'attrs': {'d': 'M 613 60 L 625 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': `M 625 60 L 637 ${switchArray[3]["value"] == 0 ? 50 : 59}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
                     ['path', {'attrs': {'d': 'M 653 60 L 637 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
                     ['g', {'attrs': {'transform': 'translate(-0.5 -0.5)'}},
@@ -284,10 +266,10 @@ export function vt() {
                                         ['div', {'attrs': {'style': 'display: inline-block; font-size: 12px; font-family: Helvetica; color: #006600; line-height: 1.2; pointer-events: none; 	white-space: normal; word-wrap: normal; '}}, '3']]]],
                             ['text', {'attrs': {'x': '633', 'y': '44', 'fill': '#006600', 'font-family': 'Helvetica', 'font-size': '12px', 'text-anchor': 'middle'}}, '3']]],
 
-                    ['path', {'attrs': {'d': 'M 613 100 L 625 100', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     //switch4
-                    ['path', {'attrs': {'d': `M 625 100 L 637 ${switchArray[4]["value"] == 0 ? 90 : 99}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => changeState(4)}}],
-
+                    ['rect', {'attrs': {'x': '623', 'y': '80', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(4)}}],
+                    ['path', {'attrs': {'d': 'M 613 100 L 625 100', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': `M 625 100 L 637 ${switchArray[4]["value"] == 0 ? 90 : 99}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
                     ['path', {'attrs': {'d': 'M 653 100 L 637 100', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
                     ['g', {'attrs': {'transform': 'translate(-0.5 -0.5)'}},
@@ -298,10 +280,10 @@ export function vt() {
                                         ['div', {'attrs': {'style': 'display: inline-block; font-size: 12px; font-family: Helvetica; color: #006600; line-height: 1.2; pointer-events: none; 	white-space: normal; word-wrap: normal; '}}, '4']]]],
                             ['text', {'attrs': {'x': '633', 'y': '84', 'fill': '#006600', 'font-family': 'Helvetica', 'font-size': '12px', 'text-anchor': 'middle'}}, '4']]],
 
-                    ['path', {'attrs': {'d': 'M 613 180 L 625 180', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     //switch5
-                    ['path', {'attrs': {'d': `M 625 180 L 637 ${switchArray[5]["value"] == 0 ? 170 : 179}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => changeState(5)}}],
-
+                    ['rect', {'attrs': {'x': '623', 'y': '160', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(5)}}],
+                    ['path', {'attrs': {'d': 'M 613 180 L 625 180', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': `M 625 180 L 637 ${switchArray[5]["value"] == 0 ? 170 : 179}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
                     ['path', {'attrs': {'d': 'M 653 180 L 637 180', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
                     ['g', {'attrs': {'transform': 'translate(-0.5 -0.5)'}},
@@ -312,10 +294,10 @@ export function vt() {
                                         ['div', {'attrs': {'style': 'display: inline-block; font-size: 12px; font-family: Helvetica; color: #006600; line-height: 1.2; pointer-events: none; 	white-space: normal; word-wrap: normal; '}}, '5']]]],
                             ['text', {'attrs': {'x': '633', 'y': '164', 'fill': '#006600', 'font-family': 'Helvetica', 'font-size': '12px', 'text-anchor': 'middle'}}, '5']]],
 
-                    ['path', {'attrs': {'d': 'M 613 220 L 625 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     //switch6
-                    ['path', {'attrs': {'d': `M 625 220 L 637 ${switchArray[6]["value"] == 0 ? 210 : 219}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => changeState(6)}}],
-
+                    ['rect', {'attrs': {'x': '623', 'y': '200', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(6)}}],
+                    ['path', {'attrs': {'d': 'M 613 220 L 625 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': `M 625 220 L 637 ${switchArray[6]["value"] == 0 ? 210 : 219}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
                     ['path', {'attrs': {'d': 'M 653 220 L 637 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
                     ['g', {'attrs': {'transform': 'translate(-0.5 -0.5)'}},
@@ -326,10 +308,10 @@ export function vt() {
                                         ['div', {'attrs': {'style': 'display: inline-block; font-size: 12px; font-family: Helvetica; color: #006600; line-height: 1.2; pointer-events: none; 	white-space: normal; word-wrap: normal; '}}, '6']]]],
                             ['text', {'attrs': {'x': '633', 'y': '204', 'fill': '#006600', 'font-family': 'Helvetica', 'font-size': '12px', 'text-anchor': 'middle'}}, '6']]],
 
-                    ['path', {'attrs': {'d': 'M 493 220 L 505 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     //switch7
-                    ['path', {'attrs': {'d': `M 505 220 L 517 ${switchArray[7]["value"] == 0 ? 210 : 219}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => changeState(7)}}],
-
+                    ['rect', {'attrs': {'x': '503', 'y': '200', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(7)}}],
+                    ['path', {'attrs': {'d': 'M 493 220 L 505 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': `M 505 220 L 517 ${switchArray[7]["value"] == 0 ? 210 : 219}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
                     ['path', {'attrs': {'d': 'M 533 220 L 517 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
                     ['g', {'attrs': {'transform': 'translate(-0.5 -0.5)'}},
@@ -417,6 +399,10 @@ export function vt() {
                     ['switch',
                         ['g', {'attrs': {'requiredFeatures': 'http://www.w3.org/TR/SVG11/feature#Extensibility'}}],
                         ['a', {'attrs': {'transform': 'translate(0,-5)', 'href': 'https://www.diagrams.net/doc/faq/svg-export-text-problems', 'target': '_blank'}},
-                            ['text', {'attrs': {'text-anchor': 'middle', 'font-size': '10px', 'x': '50%', 'y': '100%'}}, 'Viewer does not support full SVG 1.1']]]]]
+                            ['text', {'attrs': {'text-anchor': 'middle', 'font-size': '10px', 'x': '50%', 'y': '100%'}}, 'Viewer does not support full SVG 1.1']]],             
+                ]
+            ],
+                            //['button', {'attrs': {'x': '237', 'y': '140'}},'Hello i am a button']]],
+                            //['table']
         ];
 }
