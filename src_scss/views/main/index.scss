@@ -6,7 +6,9 @@ html, body {
     font-size: 10pt;
     margin: 0px;
 }
-
+div.main {
+    display: inline-block;
+}
 div.class1 {
     color: #a12020;
     font-size: 12pt;

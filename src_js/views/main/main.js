@@ -1,12 +1,15 @@
 import 'main/index.scss';
 
-function testFunction(i){
-    console.log(`Hello i pressed ${i}. button`);
-}
+// function testFunction(i){
+//     console.log(`Hello i pressed ${i}. button`);
+// }
 
 function changeState(changedSwitch){
     console.log("pogodio")
     let changedSwitchValue = r.get('remote', 'adapter', 'switch', changedSwitch, "value");
+    console.log(changedSwitchValue)
+    console.log( 1- changedSwitchValue)
+
     // r.set(['remote', 'adapter', 'switch', changedSwitch, "value"], 1-changedSwitchValue);
     hat.conn.send('adapter', {asdu: changedSwitch+30, value: 1 - changedSwitchValue });
 
@@ -22,7 +25,10 @@ function changeState(changedSwitch){
 }
 
 export function vt() {
-
+    console.log("ping")
+    if (!(r.get('remote'))){
+        return ['div'];
+    }
     let busArray = r.get('remote', 'adapter', 'bus');
     let lineArray = r.get('remote', 'adapter', 'line');
     let transformer = r.get('remote', 'adapter', 'transformer');
@@ -32,8 +38,8 @@ export function vt() {
     // console.log(transformer)
     // console.log(switchArray)
 
-    let idk = r.get('remote', 'adapter', 'switch', 1, "value");
-    console.log(idk)
+    // let idk = r.get('remote', 'adapter', 'switch', 1, "value");
+    // console.log(idk)
 
     
     // let bus = []
@@ -60,10 +66,8 @@ export function vt() {
     //     let data = JSON.parse(each)
     //     //console.log(data)
     // }
-    if (!(r.get('remote'))){
-        return ['div'];
-    }
-    return ['div',
+
+    return ['div.main',
             ['div.class1',`bus: ${JSON.stringify(busArray)}`],
             ['div.class2',`line: ${JSON.stringify(lineArray)}`],
             ['div.class3',`transformer:  ${JSON.stringify(transformer)}`],
@@ -76,7 +80,7 @@ export function vt() {
                     ['path', {'attrs': {'d': 'M 93 140 L 53 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'stroke'}}],
                     ['path', {'attrs': {'d': 'M 93 140 L 207.76 140', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '2', 'stroke-miterlimit': '10', 'pointer-events': 'stroke'}}],
                     ['path', {'attrs': {'d': 'M 210.76 140 L 206.76 142 L 207.76 140 L 206.76 138 Z', 'fill': '#000000', 'stroke': '#000000', 'stroke-width': '2', 	'stroke-miterlimit': '10', 'pointer-events': 'all'}}],
-                    ['path', {'attrs': {'d': 'M 213 180 L 213 100', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10', 'pointer-events': 	'stroke'}, on : { click: () => testFunction(0)}}],
+                    ['path', {'attrs': {'d': 'M 213 180 L 213 100', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10', 'pointer-events': 	'stroke'}}],
                     ['path', {'attrs': {'d': 'M 213 140 L 237 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     // switch0
                     ['path', {'attrs': {'d': `M 237 140 L 261 ${switchArray[0]["value"] == 0 ? 130 : 139}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => changeState(0)}}],
@@ -102,7 +106,7 @@ export function vt() {
                     ['path', {'attrs': {'d': 'M 538.24 220 L 613 220', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '2', 'stroke-miterlimit': '10', 'pointer-events': 	'none'}}],
                     ['path', {'attrs': {'d': 'M 535.24 220 L 539.24 218 L 538.24 220 L 539.24 222 Z', 'fill': '#000000', 'stroke': '#000000', 'stroke-width': '2', 	'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     ['path', {'attrs': {'d': 'M 653 120 L 653 40', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': 'M 653 240 L 653 160', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10'}, on : { click: () => testFunction(44)}}],
+                    ['path', {'attrs': {'d': 'M 653 240 L 653 160', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10'}}],
                     ['path', {'attrs': {'d': 'M 607.76 180 L 593.03 180 L 593.03 100 L 613 100', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '2', 'stroke-miterlimit': '10', 	'pointer-events': 'none'}}],
                     ['path', {'attrs': {'d': 'M 610.76 180 L 606.76 182 L 607.76 180 L 606.76 178 Z', 'fill': '#000000', 'stroke': '#000000', 'stroke-width': '2', 	'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     ['path', {'attrs': {'d': 'M 653 80 L 683 80', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
@@ -134,7 +138,7 @@ export function vt() {
                     ['path', {'attrs': {'d': 'M 413 140 L 403 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     ['path', {'attrs': {'d': 'M 413 140 L 437 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     //switch1
-                    ['path', {'attrs': {'d': `M 437 140 L 461 ${switchArray[1]["value"] == 0 ? 130 : 139}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => testFunction(1)}}],
+                    ['path', {'attrs': {'d': `M 437 140 L 461 ${switchArray[1]["value"] == 0 ? 130 : 139}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => changeState(1)}}],
 
                     ['path', {'attrs': {'d': 'M 493 140 L 461 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
@@ -254,7 +258,7 @@ export function vt() {
 
                     ['path', {'attrs': {'d': 'M 493 60 L 505 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     //switch2
-                    ['path', {'attrs': {'d': `M 505 60 L 517 ${switchArray[2]["value"] == 0 ? 50 : 59}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => testFunction(2)}}],
+                    ['path', {'attrs': {'d': `M 505 60 L 517 ${switchArray[2]["value"] == 0 ? 50 : 59}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => changeState(2)}}],
 
                     ['path', {'attrs': {'d': 'M 533 60 L 517 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
@@ -268,7 +272,7 @@ export function vt() {
 
                     ['path', {'attrs': {'d': 'M 613 60 L 625 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     //switch3
-                    ['path', {'attrs': {'d': `M 625 60 L 637 ${switchArray[3]["value"] == 0 ? 50 : 59}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => testFunction(3)}}],
+                    ['path', {'attrs': {'d': `M 625 60 L 637 ${switchArray[3]["value"] == 0 ? 50 : 59}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => changeState(3)}}],
 
                     ['path', {'attrs': {'d': 'M 653 60 L 637 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
@@ -282,7 +286,7 @@ export function vt() {
 
                     ['path', {'attrs': {'d': 'M 613 100 L 625 100', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     //switch4
-                    ['path', {'attrs': {'d': `M 625 100 L 637 ${switchArray[4]["value"] == 0 ? 90 : 99}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => testFunction(4)}}],
+                    ['path', {'attrs': {'d': `M 625 100 L 637 ${switchArray[4]["value"] == 0 ? 90 : 99}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => changeState(4)}}],
 
                     ['path', {'attrs': {'d': 'M 653 100 L 637 100', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
@@ -296,7 +300,7 @@ export function vt() {
 
                     ['path', {'attrs': {'d': 'M 613 180 L 625 180', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     //switch5
-                    ['path', {'attrs': {'d': `M 625 180 L 637 ${switchArray[5]["value"] == 0 ? 170 : 179}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => testFunction(5)}}],
+                    ['path', {'attrs': {'d': `M 625 180 L 637 ${switchArray[5]["value"] == 0 ? 170 : 179}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => changeState(5)}}],
 
                     ['path', {'attrs': {'d': 'M 653 180 L 637 180', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
@@ -310,7 +314,7 @@ export function vt() {
 
                     ['path', {'attrs': {'d': 'M 613 220 L 625 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     //switch6
-                    ['path', {'attrs': {'d': `M 625 220 L 637 ${switchArray[6]["value"] == 0 ? 210 : 219}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => testFunction(6)}}],
+                    ['path', {'attrs': {'d': `M 625 220 L 637 ${switchArray[6]["value"] == 0 ? 210 : 219}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => changeState(6)}}],
 
                     ['path', {'attrs': {'d': 'M 653 220 L 637 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
@@ -324,7 +328,7 @@ export function vt() {
 
                     ['path', {'attrs': {'d': 'M 493 220 L 505 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     //switch7
-                    ['path', {'attrs': {'d': `M 505 220 L 517 ${switchArray[7]["value"] == 0 ? 210 : 219}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => testFunction(7)}}],
+                    ['path', {'attrs': {'d': `M 505 220 L 517 ${switchArray[7]["value"] == 0 ? 210 : 219}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}, on : { click: () => changeState(7)}}],
 
                     ['path', {'attrs': {'d': 'M 533 220 L 517 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 

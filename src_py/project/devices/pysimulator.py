@@ -18,9 +18,10 @@ async def create(conf, event_client, event_type_prefix):
     device._event_client = event_client
     device._event_type_prefix = event_type_prefix
     device._async_group.spawn(device._main_loop)
+    ## dodati tu spawn za novi command, koji je async i blokirati ce main loop te slati
     device._async_group.spawn(device._event_loop)
 
-    ## dodati tu spawn za novi command, koji je async i blokirati ce main loop te slati
+    
     return device
 
 
@@ -34,26 +35,25 @@ class Device(hat.gateway.common.Device):
 
     async def _event_loop(self):
 
-        con = await connect(("127.0.0.1",19999))
-        
-        events = await self._event_client.receive()
-        
-        for e in events:
-            data = (e.payload.data)
-            tip = type(data)
-            asdu = int(data["asdu"])
-            value = int(data["value"])
-            tip1 = type(asdu)
-            tip2 = type(value)
-            if value == 1:
-                value = hat.drivers.iec104.common.SingleValue.ON
-            else:
-                value = hat.drivers.iec104.common.SingleValue.OFF
-            commandToSend = hat.drivers.iec104.common.Command(hat.drivers.iec104.common.Action.EXECUTE,value,asdu,0,None,1)
-            resp = await con.send_command(commandToSend)
-    
+        while(True):   
+            con = await connect(("127.0.0.1",19999))
+            
+            events = await self._event_client.receive()
+            for e in events:
+                data = (e.payload.data)
 
+                asdu = int(data["asdu"])
+                value = int(data["value"])
 
+                if value == 1:
+                    value = hat.drivers.iec104.common.SingleValue.ON
+                else:
+                    value = hat.drivers.iec104.common.SingleValue.OFF
+
+                commandToSend = hat.drivers.iec104.common.Command(hat.drivers.iec104.common.Action.EXECUTE,value,asdu,0,None,1)
+                
+                resp = await con.send_command(commandToSend)
+                
 
     async def _main_loop(self):
         
@@ -69,7 +69,7 @@ class Device(hat.gateway.common.Device):
                 
                 dictData.pop("quality")
                 dictData.pop("is_test")
-
+                
 
                 #parsing Cause, not JSON serializable
                 strCause = str(dictData["cause"]).split(".")[1]
@@ -85,6 +85,8 @@ class Device(hat.gateway.common.Device):
                 #SingleValue can't be serialized
                 if "SingleValue" in str(dictData["value"]):
                     dictData["value"] = 1 if ".ON" in str(dictData["value"]) else 0
+                else:
+                    dictData["value"] = dictData["value"][0]
 
 
                 # jsonData = json.dumps(dictData)
