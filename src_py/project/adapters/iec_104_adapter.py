@@ -2,7 +2,7 @@ import hat.aio
 import hat.event.common
 import hat.gui.common
 import hat.util
-import json
+from hat import json
 # from pprint import pprint
 import math
 
@@ -11,8 +11,8 @@ json_schema_repo = None
 
 
 async def create_subscription(conf):
-    return hat.event.common.Subscription([('gateway', 'gateway', 'simulator', 'device', 'gateway', 'simulator')])
-    
+    return hat.event.common.Subscription([('gateway', 'gateway', 'simulator', 'device', 'gateway', 'simulator','*')])
+
 
 async def create_adapter(conf, event_client):
     adapter = Adapter()
@@ -48,28 +48,16 @@ class Adapter(hat.gui.common.Adapter):
         while True:
             events = await self._event_client.receive()
             for e in events:
-                data = json.loads(e.payload.data)
-                bus, line, switch = [], [], []
-                for i in range (len(data)):
-                    # eachDataFromJson = json.loads(data[i])
-                    if math.isnan(data[i]["value"]):
-                        data[i]["value"] = 0
-                    asduAddress = data[i]["asdu_address"]
-                    if asduAddress < 10:
-                        bus.append(data[i])
-                    elif asduAddress < 20:  
-                        line.append(data[i])
-                    elif asduAddress == 20:
-                        transformer = data[i]
-                    else:
-                        switch.append(data[i])
+                data = e.payload.data
+                event_type = e.event_type
+                asduAddress = int(event_type[-2])
+                ioAddress = int(event_type[-1])
 
-                #busJson = json.dumps(bus)
-                #lineJson = json.dumps(line)
-                #transformerJson = json.dumps(transformer)
-                #switchJson = json.dumps(switch)
-                
-                self._state = dict(self._state, bus = bus, line = line, transformer = transformer, switch = switch)
+                if math.isnan(data["value"]):
+                    data["value"] = 0
+
+                self._state = json.set_(self._state, [f'{asduAddress}',f'{ioAddress}'], data)
+                #self._state = dict(self._state, asduAddress= asduAddress, ioAddress= ioAddress, data = data)
                 self._state_change_cb_registry.notify()
 
 

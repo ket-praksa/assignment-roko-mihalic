@@ -1,17 +1,16 @@
 html, body, input, textarea, select, button {
     font-family: 'Roboto';
 }
-button {
-    background-color: aqua;
-}
 
 html, body {
     font-size: 10pt;
     margin: 0px;
 }
 div.main {
-    display: inline-block;
+
+    height:100vh;
 }
+
 div.class1 {
     color: #a12020;
     font-size: 12pt;
@@ -30,4 +29,18 @@ div.class4 {
 }
 text.title{
     font-size: 60px;
+}
+div.table_div {
+    margin-top: 50px;
+    margin-bottom: 100px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+th {
+    font-size: medium;
+}
+td, th {
+    border: 1px black solid;
 }

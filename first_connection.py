@@ -3,9 +3,7 @@ from hat.drivers.iec104.connection import *
 import hat.event.common
 import asyncio
 import time
-import json
 import random
-#print("started")
 
 async def main():
     print("started")
