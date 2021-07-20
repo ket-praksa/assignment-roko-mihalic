@@ -18,6 +18,7 @@ import math
 import os
 from pathlib import Path
 import hat
+import json as jss
 
 json_schema_id = None
 json_schema_repo = None
@@ -33,6 +34,7 @@ async def create(conf: json.Data):
 def init_db(conf):
     #breakpoint()
     con = sqlite3.connect((os.path.join(Path(__file__).parent.parent.parent.parent,'backend','event_database.db')))
+    #breakpoint()
     cur = con.cursor()
     cur.execute(
         """CREATE TABLE IF NOT EXISTS BUS(asdu integer, io integer, val float,
@@ -71,15 +73,19 @@ class Backend(common.Backend):
                     ) -> typing.List[typing.Optional[common.Event]]:
 
         cur = self._db_con.cursor()
+        #breakpoint()
+        
         for e in events:
             
             event_type = e.event_type
-            breakpoint()
+            
             #event_type[0]== 'simulator'
-            if event_type[0] == "simulator":
+            if event_type[-3] == "simulator":
+                #breakpoint()
                 asduAddress = int(event_type[-2])
                 ioAddress = int(event_type[-1])
                 data = e.payload.data
+                
                 if math.isnan(data["value"]):
                     data["value"] = 0
                 
@@ -91,11 +97,12 @@ class Backend(common.Backend):
                     table = "SWITCH"
                 else:
                     table = "TRANSFORMER"
-                    
-                cur.execute(f"INSERT INTO {table} (asdu, io, val) VALUES ({asduAddress}, {ioAddress}, {data});")
+                
+                data = float(data["value"])
+                cur.execute(f'INSERT INTO SWITCH (asdu, io, val) VALUES ({asduAddress}, {ioAddress}, {data});')
                 cur.execute("SELECT * FROM SWITCH")
                 rows = cur.fetchall()
-                breakpoint()
+                #breakpoint()
 
         self._db_con.commit()
         result = events
