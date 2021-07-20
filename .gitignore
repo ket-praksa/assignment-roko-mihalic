@@ -3,4 +3,5 @@
 /cache
 /dist
 /node_modules
+/backend
 __pycache__

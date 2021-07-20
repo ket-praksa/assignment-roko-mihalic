@@ -14,6 +14,10 @@ function changeState(changedSwitch){
 
     //changed switch is 0-7 while their respective number is 30-37
     //changeTableVisibility(changedSwitch + 30);
+    hat.conn.send('db_adapter', {
+        'asdu': 30 + changedSwitch,
+        'io': 0,
+    })
 }
 
 
@@ -126,7 +130,7 @@ function writeText() {
                                     ['div', {'attrs': {'style': `display: flex; align-items: unsafe center; justify-content: unsafe ${textData["justify"]}; width: ${textData["width"]}px; height: 1px; padding-top: ${textData["padding"]}px; margin-left: ${textData["margin"]}px;`}},
                                         ['div', {'attrs': {'style': 'box-sizing: border-box; font-size: 0; text-align: center;'}},
                                             ['div', {'attrs': {'style': `display: inline-block; font-size: 12px; font-family: Helvetica; color: ${textData["color-fill"]}; line-height: 1.2; pointer-events: none; white-space: normal; word-wrap: normal; `}}, `${textData["text"]}`]]]],
-                                ['text', {'attrs': {'x': `${textData["x"]}`, 'y': `${textData["y"]}`, 'fill': `${textData["color-fill"]}`, 'font-family': 'Helvetica', 'font-size': '12px', 'text-anchor': 'middle'}}, `${textData["text"]}`]]];
+                                ['text', {'attrs': {'x': `${textData["x"]}`, 'y': `${textData["padding"]+4}`, 'fill': `${textData["color-fill"]}`, 'font-family': 'Helvetica', 'font-size': '12px', 'text-anchor': 'middle'}}, `${textData["text"]}`]]];
         outputText.push(textPart)
     }
     return outputText;     
@@ -151,7 +155,7 @@ export function vt() {
     //console.log(textDiv)
 
     return ['div.main',
-            ['svg', {'attrs': {'version': '1.1', 'width': '774px', 'height': '302px', 'viewBox': '-0.5 -0.5 774 302', 'style': 'background-color: rgb(255, 255, 255);'}},
+            ['svg', {'attrs': {'version': '1.1', 'width': '1700px', 'height': '800px', 'viewBox': '-0.5 -0.5 774 302', 'style': 'background-color: rgb(255, 255, 255);'}},
 
                 ['g',
                     //title

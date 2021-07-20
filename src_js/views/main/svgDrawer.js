@@ -7,8 +7,7 @@ export function getText() {
                 "margin" : 684,
                 "color-fill" : '#000000',
                 "text" :  'G',
-                "x" : '693',
-                "y" :  '84'
+                "x" : '693'
             },
             {
                 "justify" : 'center',
@@ -17,8 +16,7 @@ export function getText() {
                 "margin" : 684,
                 "color-fill" : '#000000',
                 "text" :  'G',
-                "x" : '693',
-                "y" :  '184'
+                "x" : '693'
             },
             {
                 "justify" : 'center',
@@ -27,8 +25,7 @@ export function getText() {
                 "margin" : 74,
                 "color-fill" : '#000000',
                 "text" :  '0',
-                "x" : '93',
-                "y" :  '94'
+                "x" : '93'
             },
             {
                 "justify" : 'center',
@@ -37,8 +34,7 @@ export function getText() {
                 "margin" : 194,
                 "color-fill" : '#000000',
                 "text" :  '1',
-                "x" : '213',
-                "y" :  '94'
+                "x" : '213'
             },
             {
                 "justify" : 'center',
@@ -47,8 +43,7 @@ export function getText() {
                 "margin" : 274,
                 "color-fill" : '#000000',
                 "text" :  '2',
-                "x" : '293',
-                "y" :  '94'
+                "x" : '293'
             },
             {
                 "justify" : 'center',
@@ -57,8 +52,7 @@ export function getText() {
                 "margin" : 394,
                 "color-fill" : '#000000',
                 "text" :  '3',
-                "x" : '413',
-                "y" :  '94'
+                "x" : '413'
             },
             {
                 "justify" : 'center',
@@ -67,8 +61,7 @@ export function getText() {
                 "margin" : 474,
                 "color-fill" : '#000000',
                 "text" :  '4',
-                "x" : '493',
-                "y" :  '14'
+                "x" : '493'
             },
             {
                 "justify" : 'center',
@@ -77,8 +70,7 @@ export function getText() {
                 "margin" : 634,
                 "color-fill" : '#000000',
                 "text" :  '5',
-                "x" : '653',
-                "y" :  '34'
+                "x" : '653'
             },
             {
                 "justify" : 'center',
@@ -87,8 +79,7 @@ export function getText() {
                 "margin" : 634,
                 "color-fill" : '#000000',
                 "text" :  '6',
-                "x" : '653',
-                "y" :  '154'
+                "x" : '653'
             },
             {
                 "justify" : 'flex-start',
@@ -97,8 +88,7 @@ export function getText() {
                 "margin" : 125,
                 "color-fill" : '#000000',
                 "text" :  'Bus ID',
-                "x" : '125',
-                "y" :  '234'
+                "x" : '125'
             },
             {
                 "justify" : 'center',
@@ -107,8 +97,7 @@ export function getText() {
                 "margin" : 134,
                 "color-fill" : '#FF0000',
                 "text" :  '0',
-                "x" : '153',
-                "y" :  '134'
+                "x" : '153'
             },
             {
                 "justify" : 'center',
@@ -117,8 +106,7 @@ export function getText() {
                 "margin" : 554,
                 "color-fill" : '#FF0000',
                 "text" :  '1',
-                "x" : '573',
-                "y" :  '54'
+                "x" : '573'
             },
             {
                 "justify" : 'center',
@@ -127,8 +115,7 @@ export function getText() {
                 "margin" : 554,
                 "color-fill" : '#FF0000',
                 "text" :  '3',
-                "x" : '573',
-                "y" :  '214'
+                "x" : '573'
             },
             {
                 "justify" : 'center',
@@ -137,8 +124,7 @@ export function getText() {
                 "margin" : 564,
                 "color-fill" : '#FF0000',
                 "text" :  '2',
-                "x" : '583',
-                "y" :  '139'
+                "x" : '583'
             },
             {
                 "justify" : 'flex-start',
@@ -147,8 +133,7 @@ export function getText() {
                 "margin" : 125,
                 "color-fill" : '#000000',
                 "text" :  'Line ID',
-                "x" : '125',
-                "y" :  '264'
+                "x" : '125'
             },
             {
                 "justify" : 'center',
@@ -157,8 +142,7 @@ export function getText() {
                 "margin" : 234,
                 "color-fill" : '#006600',
                 "text" :  '0',
-                "x" : '253',
-                "y" :  '119'
+                "x" : '253'
             },
             {
                 "justify" : 'center',
@@ -167,8 +151,7 @@ export function getText() {
                 "margin" : 434,
                 "color-fill" : '#006600',
                 "text" :  '1',
-                "x" : '453',
-                "y" :  '119'
+                "x" : '453'
             },
             {
                 "justify" : 'center',
@@ -177,8 +160,7 @@ export function getText() {
                 "margin" : 494,
                 "color-fill" : '#006600',
                 "text" :  '2',
-                "x" : '513',
-                "y" :  '44'
+                "x" : '513'
             },
             {
                 "justify" : 'center',
@@ -187,8 +169,7 @@ export function getText() {
                 "margin" : 614,
                 "color-fill" : '#006600',
                 "text" :  '3',
-                "x" : '633',
-                "y" :  '44'
+                "x" : '633'
             },
             {
                 "justify" : 'center',
@@ -197,8 +178,7 @@ export function getText() {
                 "margin" : 614,
                 "color-fill" : '#006600',
                 "text" :  '4',
-                "x" : '633',
-                "y" :  '84'
+                "x" : '633'
             },
             {
                 "justify" : 'center',
@@ -207,8 +187,7 @@ export function getText() {
                 "margin" : 614,
                 "color-fill" : '#006600',
                 "text" :  '5',
-                "x" : '633',
-                "y" :  '164'
+                "x" : '633'
             },
             {
                 "justify" : 'center',
@@ -217,8 +196,7 @@ export function getText() {
                 "margin" : 614,
                 "color-fill" : '#006600',
                 "text" :  '6',
-                "x" : '633',
-                "y" :  '204'
+                "x" : '633'
             },
             {
                 "justify" : 'center',
@@ -227,8 +205,7 @@ export function getText() {
                 "margin" : 494,
                 "color-fill" : '#006600',
                 "text" :  '7',
-                "x" : '513',
-                "y" :  '204'
+                "x" : '513'
             },
             {
                 "justify" : 'flex-start',
@@ -237,8 +214,7 @@ export function getText() {
                 "margin" : 125,
                 "color-fill" : '#000000',
                 "text" :  'Switch ID',
-                "x" : '125',
-                "y" :  '294'
+                "x" : '125'
             },
             {
                 "justify" : 'center',
@@ -247,8 +223,7 @@ export function getText() {
                 "margin" : 74,
                 "color-fill" : '#000000',
                 "text" :  'Bus',
-                "x" : '93',
-                "y" :  '194'
+                "x" : '93'
             },
             {
                 "justify" : 'center',
@@ -257,8 +232,7 @@ export function getText() {
                 "margin" : 134,
                 "color-fill" : '#000000',
                 "text" :  'Line',
-                "x" : '153',
-                "y" :  '154'
+                "x" : '153'
             },
             {
                 "justify" : 'center',
@@ -267,8 +241,7 @@ export function getText() {
                 "margin" : 234,
                 "color-fill" : '#000000',
                 "text" :  'Switch',
-                "x" : '253',
-                "y" :  '154'
+                "x" : '253'
             },
             {
                 "justify" : 'center',
@@ -277,8 +250,7 @@ export function getText() {
                 "margin" : 334,
                 "color-fill" : '#000000',
                 "text" :  'Trafo',
-                "x" : '353',
-                "y" :  '114'
+                "x" : '353'
             },
             {
                 "justify" : 'center',
@@ -287,8 +259,7 @@ export function getText() {
                 "margin" : 344,
                 "color-fill" : '#000000',
                 "text" :  'Shunt',
-                "x" : '363',
-                "y" :  '239'
+                "x" : '363'
             },
             {
                 "justify" : 'center',
@@ -297,8 +268,7 @@ export function getText() {
                 "margin" : 364,
                 "color-fill" : '#000000',
                 "text" :  'Ground',
-                "x" : '383',
-                "y" :  '274'
+                "x" : '383'
             },
             {
                 "justify" : 'center',
@@ -307,8 +277,7 @@ export function getText() {
                 "margin" : 714,
                 "color-fill" : '#000000',
                 "text" :  'Generator',
-                "x" : '743',
-                "y" :  '84'
+                "x" : '743'
             },
             {
                 "justify" : 'center',
@@ -317,8 +286,7 @@ export function getText() {
                 "margin" : 714,
                 "color-fill" : '#000000',
                 "text" :  'Load',
-                "x" : '733',
-                "y" :  '224'
+                "x" : '733'
             },
             {
                 "justify" : 'center',
@@ -327,8 +295,7 @@ export function getText() {
                 "margin" : 4,
                 "color-fill" : '#000000',
                 "text" :  'External grid',
-                "x" : '23',
-                "y" :  '164'
+                "x" : '23'
             }
         ];    
 }
