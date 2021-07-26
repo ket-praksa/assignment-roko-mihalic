@@ -1,0 +1,65 @@
+html, body, input, textarea, select, button {
+    font-family: 'Roboto';
+}
+
+html, body {
+    font-size: 10pt;
+    margin: 0px;
+}
+div.main {
+    height:90%;
+    //width: 90%;
+    justify-content: center;
+}
+
+div.class1 {
+    color: #a12020;
+    font-size: 12pt;
+}
+div.class2 {
+    color: #393f05;
+    font-size: 14pt;
+}
+div.class3 {
+    color: #14ac00;
+    font-size: 17pt;
+}
+div.class4 {
+    color: #4220a1;
+    font-size: 14pt;
+}
+svg {
+    align-self: center;
+    margin-left: 30px;
+}
+text.title{
+    font-size: 60px;
+    
+}
+div.table_div {
+    margin-top: 20px;
+    margin-left: 30px;
+    align-self: center;
+    margin-bottom: 50px;
+    width: 1700px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-size: large;
+//block-size: 50px;
+}
+
+th {
+    font-size: x-large;
+}
+td, th {
+    border: 1px black solid;
+}
+div.class5 {
+    align-items: center;
+    margin-top: 20px;
+    margin-left: 30px;
+    margin-right: 90px;
+    margin-bottom: 50px;
+    border: 3px black solid;
+}
