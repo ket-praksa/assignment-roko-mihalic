@@ -1,20 +1,41 @@
+from hat import json
+from hat.aio import Group
+from hat.event.common import Subscription
+from hat.gui.common import AdapterEventClient
+from hat.gui.common import AdapterSessionClient
+from hat.util import RegisterCallbackHandle
 import hat.aio
 import hat.event.common
 import hat.gui.common
 import hat.util
-from hat import json
-# from pprint import pprint
 import math
+import typing
 
 json_schema_id = None
 json_schema_repo = None
 
 
-async def create_subscription(conf):
+async def create_subscription(conf: json.Data) -> Subscription: 
+    """Creates Subscription to a specific event type.
+
+    Args:
+        conf: adapter configuration
+    Returns:
+        Subscription: subscribed event types filter
+    """
     return hat.event.common.Subscription([('gateway', 'gateway', 'simulator', 'device', 'gateway', 'simulator','*')])
 
 
-async def create_adapter(conf, event_client):
+async def create_adapter(conf: json.Data, event_client: AdapterEventClient) -> 'Adapter':
+    """Creates a new Adapter which connects device to GUI interface
+
+    Args:
+        conf: adapter configuration
+        event_client: event client for adapter
+
+    Returns:
+        new Adapter instance
+    """
     adapter = Adapter()
 
     adapter._async_group = hat.aio.Group()
@@ -30,19 +51,44 @@ async def create_adapter(conf, event_client):
 class Adapter(hat.gui.common.Adapter):
 
     @property
-    def async_group(self):
+    def async_group(self) -> Group:
+        """Creates async Group which controlls asyncio Tasks
+
+        Returns:
+            new Group instance
+        """
         return self._async_group
 
     @property
-    def state(self):
+    def state(self) -> typing.Dict[str, json.Data]: #check
+        """Returns adapter state.
+
+        Returns:
+            Adapter state
+        """  
         return self._state
 
-    def subscribe_to_state_change(self, callback):
+    def subscribe_to_state_change(self, callback: typing.Callable) -> RegisterCallbackHandle:
+        """Registers state changes and returns a callback
+
+        Args:
+            callback: notified on state change
+
+        Returns:
+            registers callback handle
+        """
         return self._state_change_cb_registry.register(callback)
 
-    async def create_session(self, juggler_client):
-        return Session(self, juggler_client,
-                       self._async_group.create_subgroup())
+    async def create_session(self, juggler_client: AdapterSessionClient) -> 'Session':
+        """Creates a Session in the adapter for client.
+
+        Args:
+            juggler_client: juggler connection
+
+        Returns:
+            new client Session
+        """
+        return Session(self, juggler_client, self._async_group.create_subgroup())
 
     async def _main_loop(self):
         while True:
@@ -57,7 +103,6 @@ class Adapter(hat.gui.common.Adapter):
                     data["value"] = 0
 
                 self._state = json.set_(self._state, [f'{asduAddress}',f'{ioAddress}'], data)
-                #self._state = dict(self._state, asduAddress= asduAddress, ioAddress= ioAddress, data = data)
                 self._state_change_cb_registry.notify()
 
 
@@ -70,7 +115,12 @@ class Session(hat.gui.common.AdapterSession):
         self._async_group.spawn(self._run)
 
     @property
-    def async_group(self):
+    def async_group(self) -> Group:
+        """Creates async Group which controlls asyncio Tasks
+
+        Returns:
+            new Group instance
+        """
         return self._async_group
 
     async def _run(self):

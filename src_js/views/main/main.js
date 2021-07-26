@@ -5,7 +5,6 @@ import * as plotly from 'plotly.js-dist/plotly.js';
 let plotDiv = ['div'];
     
 export function plot(data, args, layout, config) {
-    console.log(data)
     let asduAddress = data[0].split(';')[0]
     
     let allData = {
@@ -25,28 +24,28 @@ export function plot(data, args, layout, config) {
     let format_data = []
     for(let i = 0; i < 5; i++){
         let dataForEachIo = allData[i]
-        console.log('dataForEachIo: ' ,dataForEachIo)
-
+        
         if(dataForEachIo.length == 0){
             continue
         }
+
+        console.log('dataForEachIo: ' ,dataForEachIo)
         let xCoords = []
         let yCoords = []
-        //let ioName =  dataForEachIo[0].split(';')[3]
         for(let dataArrayElem of dataForEachIo){
             let dataSplitted = dataArrayElem.split(';')
             xCoords.push(dataSplitted[2])
             yCoords.push(dataSplitted[1])
         }
+
         let format_data_each = {
             x: xCoords, // time values
             y: yCoords, // simulator values
             type: 'scatter', 
-            //name: `${ioName}`, 
-            name: `${args[i]}`, 
+            name: `${args[i+1]}`, // trace name from args
 
         }
-        console.log('format each: ', format_data_each)
+        //console.log('format each: ', format_data_each)
        
         format_data.push(format_data_each)
     }
@@ -78,17 +77,13 @@ function changeState(changedSwitch){
 
     hat.conn.send('adapter', {asdu: changedSwitch+30,
                               value: 1 - changedSwitchValue});
-                               // ,io: changedSwitchIO
-
-    //changed switch is 0-7 while their respective number is 30-37
-    //changeTableVisibility(changedSwitch + 30);
 }
 
 
 function changeTableVisibility(chosenElement){
     // getting data value to find which(if any element was visible)
     let tableValue = r.get('data', 'table_visible')
-    console.log('table value: ',tableValue)
+    console.log('table value for asdu address: ', chosenElement, ' is: ', tableValue)
 
     // closing table by clicking the same element twice
     if(tableValue === chosenElement){
@@ -97,11 +92,10 @@ function changeTableVisibility(chosenElement){
     }
     // saving the chosen element as visible 
     r.set(['data', 'table_visible'], chosenElement)
+    // show db data for chosenElement
     hat.conn.send('db_adapter', {
         'asdu': chosenElement,
     })
-    console.log('helo idk')
-
 
 }
 
@@ -122,13 +116,13 @@ function checkTableDrawability() {
 
     // split by asduAddress which asdu needs to be drawn
     if (asduAddress < 10){
-        var tableContent = drawTable(asduAddress, 
+        var tableContent = drawTableAndPlot(asduAddress, 
                                         2,
                                         "BUS",
                                         "Active power [MW]", 
                                         "Reactive power [MVar]");
     }  else if (asduAddress < 20){
-        var tableContent = drawTable(asduAddress, 
+        var tableContent = drawTableAndPlot(asduAddress, 
                                         5, 
                                         "LINE",
                                         "Active power at line start [MW]", 
@@ -137,7 +131,7 @@ function checkTableDrawability() {
                                         "Reactive power at line end [MVar]", 
                                         "Load [%]");
     } else if (asduAddress == 20){
-        var tableContent = drawTable(asduAddress, 
+        var tableContent = drawTableAndPlot(asduAddress, 
                                         5, 
                                         "TRANSFORMER",
                                         "Active power on higher voltage side[MW]", 
@@ -146,7 +140,7 @@ function checkTableDrawability() {
                                         "Reactive power on higher voltage side [MVar]",
                                         "Load [%]");
     } else {
-        var tableContent = drawTable(asduAddress,
+        var tableContent = drawTableAndPlot(asduAddress,
                                         1,
                                         "SWITCH",
                                         "ON/OFF");
@@ -156,20 +150,18 @@ function checkTableDrawability() {
     for(let listElem of tableContent){
         tableDiv.push(listElem);
     }
-    console.log('json tablice',JSON.stringify(tableDiv))
+    console.log('Json tablice:',JSON.stringify(tableDiv))
     return tableDiv;
 }
 
 // if the table needs to be drawn, we first write the headers and which element was chosen
 // also writes all values on each IO address in a separate row
-function drawTable(asduAddress, ioNumber, ...args) {
+function drawTableAndPlot(asduAddress, ioNumber, ...args) {
 
     let plotDataRaw = r.get('remote', 'db_adapter', 'plot_data')
-    console.log('aaaaaaaaaaaaaaa2')
-
     console.log('db:', plotDataRaw)
+
     if(plotDataRaw !== undefined) {
-        // var plotDiv = ['div'];
         let outputPlot = plot(plotDataRaw, args)
         plotDiv = outputPlot;
     }
@@ -220,24 +212,6 @@ function writeText() {
 
 }
 
-function drawPlot(){
-    let asduAddress = r.get('data', 'table_visible');
-    console.log('aaaaaaaaaaaaaaa1')
-    // returns empty div, nothing is being drawn
-    if(asduAddress === undefined){
-        return ['div'];
-    }
-    let plotDataRaw = r.get('remote', 'db_adapter', 'plot_data')
-    console.log('aaaaaaaaaaaaaaa2')
-
-    console.log('db:', plotDataRaw)
-    if(plotDataRaw === undefined) {
-        return ['div'];
-    }
-    let outputPlot = plot(plotDataRaw)
-    return outputPlot;
-}
-
 
 // main function which rerenders the pages and it's values every three seconds.
 export function vt() {
@@ -246,16 +220,15 @@ export function vt() {
     if (!(r.get('remote'))){
         return ['div'];
     }
-
+    plotDiv = ['div'];
     // draws the table if it needs to be drawn
     let tableDiv = checkTableDrawability()
-    //console.log(tableDiv)
 
     //draws text every time, saves many lines of duplicated code
     let textDiv = writeText();
-    //console.log(textDiv)
+
     //let plotDiv = drawPlot();
-    
+    console.log('plotDiv:', plotDiv) 
 
 
     return ['div.main',
@@ -359,6 +332,7 @@ export function vt() {
                     ['path', {'attrs': {'d': 'M 533 220 L 517 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
                     ['rect', {'attrs': {'x': '93', 'y': '280', 'width': '20', 'height': '20', 'fill': '#006600', 'stroke': '#000000', 'pointer-events': 'none'}}],
+                    
                     // text div is already in it's 'g' container
                     textDiv,
                     

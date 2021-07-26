@@ -1,43 +1,36 @@
-"""Dummy backend
-
-Simple backend which returns constat values. While backend is not closed,
-all methods are successful and:
-
-* `DummyBackend.get_last_event_id` returns instance ``0``
-* `DummyBackend.register` returns input arguments
-* `DummyBackend.query` returns ``[]``
-
-"""
-
-import typing
 from hat import aio
 from hat import json
 from hat.event.server import common
-import sqlite3
+from pathlib import Path
+import datetime
+import hat
 import math
 import os
-from pathlib import Path
-import hat
-import json as jss
-import datetime
+import sqlite3
 import time
+import typing
 
 json_schema_id = None
 json_schema_repo = None
 
 
-async def create(conf: json.Data):
+async def create(conf: json.Data) -> 'Backend':
+    """Creates new Backend instance with connection to database
+    Args:
+        conf: backend configuration
+
+    Returns:
+        new Backend instance
+    """
     backend = Backend()
     backend._async_group = aio.Group()
-    backend._db_con = init_db(conf)
-    #backend._db_con = sqlite3.connect(conf["db_path"])
+    backend._db_con = _init_db(conf)
     return backend
 
-def init_db(conf):
-    #breakpoint()
+def _init_db(conf):
     con = sqlite3.connect((os.path.join(Path(__file__).parent.parent.parent.parent,'backend','event_database.db')))
-    #breakpoint()
     cur = con.cursor()
+    
     cur.execute(
         """CREATE TABLE IF NOT EXISTS BUS(asdu integer, io integer, val float,
                 'time' DATETIME NOT NULL DEFAULT (datetime(CURRENT_TIMESTAMP, 'localtime')))"""
@@ -63,33 +56,45 @@ class Backend(common.Backend):
 
     @property
     def async_group(self) -> aio.Group:
+        """Creates async Group which controlls asyncio Tasks
+
+        Returns:
+            new Group instance
+        """
         return self._async_group
 
-    async def get_last_event_id(self,
-                                server_id: int
-                                ) -> common.EventId:
+    async def get_last_event_id(self, server_id: int) -> common.EventId:
+        """Gets the last events id form the server id
+
+        Args:
+            server_id: server id
+
+        Returns:
+            last events id form the server id
+        """
         result = common.EventId(server_id, 0)
         return await self._async_group.spawn(aio.call, lambda: result)
 
     
-    async def register(self,
-                    events: typing.List[common.Event]
-                    ) -> typing.List[typing.Optional[common.Event]]:
+    async def register(self, events: typing.List[common.Event]) -> typing.List[typing.Optional[common.Event]]:
+        """Registers events from device and returns a list of events
 
+        Args:
+            events: receives events from device
+
+        Returns:
+            list of events
+        """
         cur = self._db_con.cursor()
-        #breakpoint()
-        
-        for e in events:
-            
+        for e in events:            
             event_type = e.event_type
             
             if event_type[-3] == "simulator":
-                #breakpoint()
                 asduAddress = int(event_type[-2])
                 ioAddress = int(event_type[-1])
                 key = f'{asduAddress},{ioAddress}'
                 data = e.payload.data
-                #breakpoint()
+
                 current_time = datetime.datetime.fromtimestamp(time.time())
                 containsKey = Backend.last_entry.__contains__(key)
 
@@ -107,10 +112,6 @@ class Backend(common.Backend):
                         table = "SWITCH"
                     else:
                         table = "TRANSFORMER"
-
-                    if asduAddress == 37:
-                        breakpoint()
-
                     
                     data = float(data["value"])
 
@@ -120,37 +121,27 @@ class Backend(common.Backend):
                         cur.execute(f"DELETE FROM {table} ORDER BY time LIMIT 1000")
 
                     cur.execute(f'INSERT INTO {table} (asdu, io, val) VALUES ({asduAddress}, {ioAddress}, {data});')
-                # if(asduAddress == 37):
-                    
-                #     cur.execute(f"SELECT * FROM {table}")
-                #     rows = cur.fetchall()
-                    #breakpoint()
-                #breakpoint()
-                
-
-                # last = Backend.last_entry.get(asduAddress, None)
-                # if last is None: 
-                    
-                # elif current_time - datetime.timedelta(minutes=1) < last:
-                #     pass
-
-                #Backend.last_entry[asduAddress] = current_time
-                #breakpoint()
                 
         self._db_con.commit()
         result = events
         return await self._async_group.spawn(aio.call, lambda: result)
 
-    async def query(self, data: common.QueryData ) -> typing.List[common.Event]:
+    async def query(self, data: common.QueryData) -> typing.List[common.Event]:
+        """Gets all records for the given Query and returns them in a list
+
+        Args:
+            data: query data
+
+        Returns:
+            list of events with data from database
+        """
         result = []
         cur = self._db_con.cursor()
         event_type = data.event_types[0]
-        #breakpoint()
 
         if event_type[0] == "db":
-            #time_val = {}
             asduAddress = int(event_type[1])
-            #ioAddress = int(event_type[2])
+
             if asduAddress in range(0, 10): 
                 table = "BUS"
             elif asduAddress in range(10, 20):
@@ -161,13 +152,11 @@ class Backend(common.Backend):
                 table = "TRANSFORMER"
                 
             time_val = []
-            #  AND io={ioAddress}
+
             for asdu, val, io, time in cur.execute(
                 f"SELECT asdu,io, val, time FROM {table} WHERE asdu={asduAddress} AND time >= datetime('now','-20 minutes','localtime');"):
                 time_val.append(f"{asdu};{io};{time};{val}")
 
-
-            # uzet asdu i io, selectat podatke, poslat u session
             event = hat.event.common.Event(
                 event_id=hat.event.common.EventId(server=1, instance=1),
                 timestamp=common.Timestamp(1,2),

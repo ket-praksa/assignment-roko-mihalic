@@ -1,21 +1,42 @@
+from hat import json
+from hat.aio import Group
+from hat.event.common import Subscription
+from hat.gui.common import AdapterEventClient
+from hat.gui.common import AdapterSessionClient
+from hat.util import RegisterCallbackHandle
 import hat.aio
 import hat.event.common
 import hat.gui.common
-import hat.util
 import hat.juggler
-import numbers
-import math
+import hat.util
+import typing
 
 json_schema_id = None
 json_schema_repo = None
 
 
-async def create_subscription(conf):
+async def create_subscription(conf: json.Data) -> Subscription: 
+    """Creates Subscription to a specific event type.
+
+    Args:
+        conf: adapter configuration
+    Returns:
+        Subscription: subscribed event types filter
+    """
     return hat.event.common.Subscription([("db","*")])
 
 
-async def create_adapter(conf, event_client):
-    adapter = DBAdapter()
+async def create_adapter(conf: json.Data, event_client: AdapterEventClient) -> 'DbAdapter':
+    """Creates a new DbAdapter which connects to database
+
+    Args:
+        conf: adapter configuration
+        event_client: event client for adapter
+
+    Returns:
+        new DbAdapter instance
+    """
+    adapter = DbAdapter()
 
     adapter._async_group = hat.aio.Group()
     adapter._event_client = event_client
@@ -26,27 +47,50 @@ async def create_adapter(conf, event_client):
     return adapter
 
 
-class DBAdapter(hat.gui.common.Adapter):
+class DbAdapter(hat.gui.common.Adapter):
     @property
-    def async_group(self):
+    def async_group(self) -> Group:
+        """Creates async Group which controlls asyncio Tasks
+
+        Returns:
+            new Group instance
+        """
         return self._async_group
 
     @property
-    def state(self):
+    def state(self) -> typing.Dict[str, json.Data]: #check
+        """Returns adapter state.
+
+        Returns:
+            DbAdapter state
+        """  
         return self._state
     
-    def subscribe_to_state_change(self, callback):
+    def subscribe_to_state_change(self, callback: typing.Callable) -> RegisterCallbackHandle:
+        """Registers state changes and returns a callback
+
+        Args:
+            callback: notified on state change
+
+        Returns:
+            registers callback handle
+        """
         return self._state_change_cb_registry.register(callback)
 
-    async def create_session(self, juggler_client):
+    async def create_session(self, juggler_client: AdapterSessionClient) -> 'Session':
+        """Creates a Session in the adapter for client.
+
+        Args:
+            juggler_client: juggler connection
+
+        Returns:
+            new client Session
+        """
         return Session(self, juggler_client, self._async_group.create_subgroup())
 
     async def _main_loop(self):
         while True:
             events = await self._event_client.receive()
-            # events = await self._event_client.query(
-            #     hat.event.common.QueryData(event_types=[["db", "*"]], max_results=1)
-            # )
 
 
 class Session(hat.gui.common.AdapterSession):
@@ -58,38 +102,49 @@ class Session(hat.gui.common.AdapterSession):
         self._state = {}
 
     @property
-    def async_group(self):
+    def async_group(self) -> Group:
+        """Creates async Group which controlls asyncio Tasks
+
+        Returns:
+            new Group instance
+        """
         return self._async_group
 
     @property
-    def state(self):
+    def state(self) -> typing.Dict[str, json.Data]: #check
+        """Returns session state.
+
+        Returns:
+            Session state
+        """  
         return self._state
     
-    def subscribe_to_state_change(self, callback):
+    def subscribe_to_state_change(self, callback: typing.Callable) -> RegisterCallbackHandle:
+        """Registers state changes and returns a callback
+
+        Args:
+            callback: notified on state change
+
+        Returns:
+            registers callback handle
+        """
         return self._state_change_cb_registry.register(callback)
 
     async def _run(self):
         try:
             while True:
                 received = await self._juggler_client.receive()
-                #breakpoint()
-
                 asdu = str(received.get("asdu"))
-                # io = str(received.get("io"))   , io
 
                 events = await self._adapter._event_client.query(
                     hat.event.common.QueryData(event_types=[["db", asdu]], max_results=1)
                 )
 
                 self._state = dict(self._state)
-               
-
                 self._state["plot_data"] = events[0].payload.data 
-                #breakpoint()
                 self._on_state_change()
 
         except Exception as e:
-            #breakpoint()
             await self.wait_closing()
 
     def _on_state_change(self):

@@ -1,33 +1,52 @@
+from hat import json
+from hat.aio import Group
+from hat.drivers.iec104.connection import Connection, connect
+from hat.gateway.common import DeviceEventClient
 import asyncio
 import hat.aio
-from hat.drivers.iec104.connection import connect
-import hat.event.common
 import hat.drivers.iec104.common
-
+import hat.event.common
+import typing
+#import sys
 json_schema_id = None
 json_schema_repo = None
 device_type = 'simulator'
 
 
-async def create(conf, event_client, event_type_prefix):
+async def create(conf: json.Data, event_client: DeviceEventClient,
+                 event_type_prefix: typing.List[str]) -> 'Device':
+    """Creates a new Device instance which connects to simulator. Receives events from simulator and
+    sends commands back to simulator
+
+    Args:
+        conf: device configuration
+        event_client: device's event client interface
+        event_type_prefix: event type prefix
+
+    Returns:
+        new Device instance
+    """
+
     device = Device()
 
     device._async_group = hat.aio.Group()
     device._event_client = event_client
     device._event_type_prefix = event_type_prefix
     device._async_group.spawn(device._main_loop)
-
-    # new function added to _async_group which runs concurrently with the main loop
     device._async_group.spawn(device._event_loop)
 
-    
     return device
 
 
 class Device(hat.gateway.common.Device):
 
     @property
-    def async_group(self):
+    def async_group(self) -> Group:
+        """Creates async Group which controlls asyncio Tasks
+
+        Returns:
+            new Group instance
+        """
         return self._async_group
 
     # _event_loop waits for events from SVG model by switches
@@ -43,7 +62,6 @@ class Device(hat.gateway.common.Device):
 
                 asdu = int(data["asdu"])
                 value = int(data["value"])
-                # io = int(data["io"])
 
                 if value == 1:
                     value = hat.drivers.iec104.common.SingleValue.ON
@@ -60,21 +78,27 @@ class Device(hat.gateway.common.Device):
                 
 
     async def _main_loop(self):
-        
+        # try:
+        #     for _ in range(5):
+        #         con = await connect(("127.0.0.1",19999))
+        #         if not isinstance(con, Connection):
+        #             raise ValueError("Can't connect to simulator")
+        # except:
+        #     #print Error cant connect
+        #     sys.exit(-1)
         con = await connect(("127.0.0.1",19999))    
         data = await con.interrogate(65535)
         await asyncio.sleep(3)
         for event in data:
-            self.sendEvent(event)
+            self._sendEvent(event)
         
         while True:
             data = await con.receive()
             for event in data:
-                self.sendEvent(event)
+                self._sendEvent(event)
 
 
-    def sendEvent(self, event):
-        #breakpoint()
+    def _sendEvent(self, event):
         dictData = event._asdict() 
                 
         dictData.pop("quality")
