@@ -7,7 +7,7 @@ import hat.aio
 import hat.drivers.iec104.common
 import hat.event.common
 import typing
-#import sys
+
 json_schema_id = None
 json_schema_repo = None
 device_type = 'simulator'
@@ -78,24 +78,30 @@ class Device(hat.gateway.common.Device):
                 
 
     async def _main_loop(self):
-        # try:
-        #     for _ in range(5):
-        #         con = await connect(("127.0.0.1",19999))
-        #         if not isinstance(con, Connection):
-        #             raise ValueError("Can't connect to simulator")
-        # except:
-        #     #print Error cant connect
-        #     sys.exit(-1)
-        con = await connect(("127.0.0.1",19999))    
-        data = await con.interrogate(65535)
-        await asyncio.sleep(3)
-        for event in data:
-            self._sendEvent(event)
-        
         while True:
-            data = await con.receive()
-            for event in data:
-                self._sendEvent(event)
+            while True:
+                try:
+                    con = await connect(("127.0.0.1",19999))
+                    break
+                except (ConnectionError, ConnectionRefusedError):
+                    await asyncio.sleep(1)
+
+            try:
+                data = await con.interrogate(65535)
+                await asyncio.sleep(3)  
+                for event in data:
+                    self._sendEvent(event)
+                
+                while True:
+                    data = await con.receive()
+                    for event in data:
+                        self._sendEvent(event)
+
+            except ConnectionError:
+                await asyncio.sleep(1)
+
+            except Exception:
+                self.close()
 
 
     def _sendEvent(self, event):
