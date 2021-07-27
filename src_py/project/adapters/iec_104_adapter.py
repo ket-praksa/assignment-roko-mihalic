@@ -1,4 +1,4 @@
-from hat import json
+from hat import json as hatJson
 from hat.aio import Group
 from hat.event.common import Subscription
 from hat.gui.common import AdapterEventClient
@@ -10,12 +10,12 @@ import hat.gui.common
 import hat.util
 import math
 import typing
-
+import json
 json_schema_id = None
 json_schema_repo = None
 
 
-async def create_subscription(conf: json.Data) -> Subscription: 
+async def create_subscription(conf: hatJson.Data) -> Subscription: 
     """Creates Subscription to a specific event type.
 
     Args:
@@ -26,7 +26,7 @@ async def create_subscription(conf: json.Data) -> Subscription:
     return hat.event.common.Subscription([('gateway', 'gateway', 'simulator', 'device', 'gateway', 'simulator','*')])
 
 
-async def create_adapter(conf: json.Data, event_client: AdapterEventClient) -> 'Adapter':
+async def create_adapter(conf: hatJson.Data, event_client: AdapterEventClient) -> 'Adapter':
     """Creates a new Adapter which connects device to GUI interface
 
     Args:
@@ -60,7 +60,7 @@ class Adapter(hat.gui.common.Adapter):
         return self._async_group
 
     @property
-    def state(self) -> typing.Dict[str, json.Data]: #check
+    def state(self) -> typing.Dict[str, hatJson.Data]: #check
         """Returns adapter state.
 
         Returns:
@@ -94,15 +94,18 @@ class Adapter(hat.gui.common.Adapter):
         while True:
             events = await self._event_client.receive()
             for e in events:
-                data = e.payload.data
+                #data = e.payload.data
+                data = json.loads(e.payload.data)
                 event_type = e.event_type
-                asduAddress = int(event_type[-2])
-                ioAddress = int(event_type[-1])
+                
+                asdu_address = int(event_type[-2])
+                io_address = int(event_type[-1])
 
-                if math.isnan(data["value"]):
-                    data["value"] = 0
-
-                self._state = json.set_(self._state, [f'{asduAddress}',f'{ioAddress}'], data)
+                if not(data["value"] == 'ON' or data["value"] == 'OFF'):
+                    if math.isnan(data["value"]):
+                        data["value"] = 0
+               
+                self._state = hatJson.set_(self._state, [f'{asdu_address}',f'{io_address}'], data)
                 self._state_change_cb_registry.notify()
 
 
