@@ -1,5 +1,5 @@
 import 'main/index.scss';
-import { getText } from './svgDrawer';
+import { getText } from './svgDrawer'; //getLines,
 import * as plotly from 'plotly.js-dist/plotly.js';
 
 let plotDiv = ['div'];
@@ -108,7 +108,7 @@ function changeTableVisibility(chosenElement){
 
 
 // each time vt() starts it needs to check if any table needs to be drawn
-function checkTableDrawability() {
+function checkTableAndPlotDrawability() {
     // finding if any asduAddress is saved as true
     let asduAddress = r.get('data', 'table_visible');
     // returns empty div, nothing is being drawn
@@ -173,7 +173,6 @@ function drawTableAndPlot(asduAddress, ioNumber, ...args) {
         plotDiv = outputPlot;
     }
     
-
     // total data from the function
     let outputTable = []
     
@@ -200,48 +199,20 @@ function drawTableAndPlot(asduAddress, ioNumber, ...args) {
 // all text and their respected values and location is saved in an array of objects
 // some settings are used on all text elements while their location, colour and text varies
 function writeText() {
-    // all saved in one 'g' container
-    let outputText = ['g',]
-    let rawData = getText()
-    // iterating over each object
-    for(let textData of rawData) {
-        let textPart = ['g', {'attrs': {'transform': 'translate(-0.5 -0.5)'}},
-                            ['switch',
-                                ['foreignObject', {'attrs': {'style': 'overflow: visible; text-align: left;', 'pointer-events': 'none', 'width': '100%', 'height': '100%', 'requiredFeatures': 'http://www.w3.org/TR/SVG11/feature#Extensibility'}},
-                                    ['div', {'attrs': {'style': `display: flex; align-items: unsafe center; justify-content: unsafe ${textData["justify"]}; width: ${textData["width"]}px; height: 1px; padding-top: ${textData["padding"]}px; margin-left: ${textData["margin"]}px;`}},
-                                        ['div', {'attrs': {'style': 'box-sizing: border-box; font-size: 0; text-align: center;'}},
-                                            ['div', {'attrs': {'style': `display: inline-block; font-size: 12px; font-family: Helvetica; color: ${textData["color-fill"]}; line-height: 1.2; pointer-events: none; white-space: normal; word-wrap: normal; `}}, `${textData["text"]}`]]]],
-                                ['text', {'attrs': {'x': `${textData["x"]}`, 'y': `${textData["padding"]+4}`, 'fill': `${textData["color-fill"]}`, 'font-family': 'Helvetica', 'font-size': '12px', 'text-anchor': 'middle'}}, `${textData["text"]}`]]];
-        outputText.push(textPart)
-    }
-    return outputText;     
-
-
+    let outputText = 
+    ['g', getText().map(textData => ['g', {'attrs': {'transform': 'translate(-0.5 -0.5)'}},
+        ['switch',
+            ['foreignObject', {'attrs': {'style': 'overflow: visible; text-align: left;', 'pointer-events': 'none', 'width': '100%', 'height': '100%', 'requiredFeatures': 'http://www.w3.org/TR/SVG11/feature#Extensibility'}},
+                ['div', {'attrs': {'style': `display: flex; align-items: unsafe center; justify-content: unsafe ${textData["justify"]}; width: ${textData["width"]}px; height: 1px; padding-top: ${textData["padding"]}px; margin-left: ${textData["margin"]}px;`}},
+                    ['div', {'attrs': {'style': 'box-sizing: border-box; font-size: 0; text-align: center;'}},
+                        ['div', {'attrs': {'style': `display: inline-block; font-size: 12px; font-family: Helvetica; color: ${textData["color-fill"]}; line-height: 1.2; pointer-events: none; white-space: normal; word-wrap: normal; `}}, `${textData["text"]}`]]]],
+            ['text', {'attrs': {'x': `${textData["x"]}`, 'y': `${textData["padding"]+4}`, 'fill': `${textData["color-fill"]}`, 'font-family': 'Helvetica', 'font-size': '12px', 'text-anchor': 'middle'}}, `${textData["text"]}`]]])];
+    
+    return outputText;
 }
 
-
-// main function which rerenders the pages and it's values every three seconds.
-export function vt() {
-    console.log("ping")
-    // prevents undefined text on screen
-    if (!(r.get('remote'))){
-        return ['div'];
-    }
-    plotDiv = ['div'];
-    // draws the table if it needs to be drawn
-    let tableDiv = checkTableDrawability()
-
-    //draws text every time, saves many lines of duplicated code
-    let textDiv = writeText();
-
-    //let plotDiv = drawPlot();
-    console.log('plotDiv:', plotDiv) 
-
-
-    return ['div.main',
-            ['svg', {'attrs': {'version': '1.1', 'width': '1700px', 'height': '800px', 'viewBox': '-0.5 -0.5 774 302', 'style': 'background-color: rgb(255, 255, 255);'}},
-
-                ['g',
+function getLines() {
+    return ['g',
                     //title
                     ['text', {'attrs': {'x': '200', 'y': '40', 'fill': '#000000', 'font-family': 'Helvetica', 'font-size': '30px', 'text-anchor': 'middle'}}, 'IEC 60870-5-104'],
 
@@ -252,12 +223,6 @@ export function vt() {
                     ['path', {'attrs': {'d': 'M 93 140 L 207.76 140', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '2', 'stroke-miterlimit': '10', 'pointer-events': 'stroke'}, on : { click: () => changeTableVisibility(10)}}],
                     ['path', {'attrs': {'d': 'M 210.76 140 L 206.76 142 L 207.76 140 L 206.76 138 Z', 'fill': '#000000', 'stroke': '#000000', 'stroke-width': '2', 	'stroke-miterlimit': '10', 'pointer-events': 'all'}}],
                     ['path', {'attrs': {'d': 'M 213 180 L 213 100', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10', 'pointer-events': 'stroke'}, on : { click: () => changeTableVisibility(1)}}],
-                    ['path', {'attrs': {'d': 'M 213 140 L 237 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    // switch0
-                    ['rect', {'attrs': {'x': '237.2', 'y': '125', 'width': '30', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(30)}}],
-                    ['path', {'attrs': {'d': `M 237 140 L 261 ${r.get('remote', 'adapter', 30, 0, "value") == "OFF" ? 130 : 139}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                   
-                    ['path', {'attrs': {'d': 'M 293 140 L 261 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     ['path', {'attrs': {'d': 'M 293 180 L 293 100', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(2)}}],
                     ['rect', {'attrs': {'x': '320.2', 'y': '230', 'width': '25.6', 'height': '10', 'fill': '#ffffff', 'stroke': '#000000', 'transform': 'rotate(90,333,235)', 	'pointer-events': 'none'}}],
                     ['path', {'attrs': {'d': 'M 313 235 L 320.2 235 M 345.8 235 L 353 235', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'transform': 	'rotate(90,333,235)', 'pointer-events': 'none'}}],
@@ -293,69 +258,97 @@ export function vt() {
                     ['path', {'attrs': {'d': 'M 688.88 226.5 L 701.88 220 L 688.88 213.5', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 	'none'}}],
                     ['path', {'attrs': {'d': 'M 413 180 L 413 100', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(3)}}],
                     ['path', {'attrs': {'d': 'M 413 140 L 403 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': 'M 413 140 L 437 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-  
-                    //switch1
-                    ['rect', {'attrs': {'x': '437', 'y': '115', 'width': '30', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(31)}}],
-                    ['path', {'attrs': {'d': `M 437 140 L 461 ${r.get('remote', 'adapter', 31, 0, "value") == "OFF" ? 130 : 139}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                    ['path', {'attrs': {'d': 'M 493 140 L 461 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['rect', {'attrs': {'x': '93', 'y': '220', 'width': '20', 'height': '20', 'fill': '#000000', 'stroke': '#000000', 'pointer-events': 'none'}}],
-                    ['rect', {'attrs': {'x': '93', 'y': '250', 'width': '20', 'height': '20', 'fill': '#ff0000', 'stroke': '#000000', 'pointer-events': 'none'}}],
 
-                    //switch2
-                    ['rect', {'attrs': {'x': '503', 'y': '40', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(32)}}],
-                    ['path', {'attrs': {'d': 'M 493 60 L 505 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': `M 505 60 L 517 ${r.get('remote', 'adapter', 32, 0, "value") == "OFF" ? 50 : 59}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                    ['path', {'attrs': {'d': 'M 533 60 L 517 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                     // switch0
+                     ['rect', {'attrs': {'x': '237.2', 'y': '125', 'width': '30', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(30)}}],
+                     ['path', {'attrs': {'d': 'M 213 140 L 237 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                     ['path', {'attrs': {'d': `M 237 140 L 261 ${r.get('remote', 'adapter', 30, 0, "value") == "OFF" ? 130 : 139}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
+                     ['path', {'attrs': {'d': 'M 293 140 L 261 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+ 
+                     //switch1
+                     ['rect', {'attrs': {'x': '437', 'y': '115', 'width': '30', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(31)}}],
+                     ['path', {'attrs': {'d': 'M 413 140 L 437 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                     ['path', {'attrs': {'d': `M 437 140 L 461 ${r.get('remote', 'adapter', 31, 0, "value") == "OFF" ? 130 : 139}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
+                     ['path', {'attrs': {'d': 'M 493 140 L 461 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+ 
+                     //switch2
+                     ['rect', {'attrs': {'x': '503', 'y': '40', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(32)}}],
+                     ['path', {'attrs': {'d': 'M 493 60 L 505 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                     ['path', {'attrs': {'d': `M 505 60 L 517 ${r.get('remote', 'adapter', 32, 0, "value") == "OFF" ? 50 : 59}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
+                     ['path', {'attrs': {'d': 'M 533 60 L 517 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+ 
+                     //switch3
+                     ['rect', {'attrs': {'x': '623', 'y': '40', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(33)}}],
+                     ['path', {'attrs': {'d': 'M 613 60 L 625 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                     ['path', {'attrs': {'d': `M 625 60 L 637 ${r.get('remote', 'adapter', 33, 0, "value") == "OFF" ? 50 : 59}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
+                     ['path', {'attrs': {'d': 'M 653 60 L 637 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+ 
+                     //switch4
+                     ['rect', {'attrs': {'x': '623', 'y': '80', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(34)}}],
+                     ['path', {'attrs': {'d': 'M 613 100 L 625 100', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                     ['path', {'attrs': {'d': `M 625 100 L 637 ${r.get('remote', 'adapter', 34, 0, "value") == "OFF" ? 90 : 99}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
+                     ['path', {'attrs': {'d': 'M 653 100 L 637 100', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+ 
+                     //switch5
+                     ['rect', {'attrs': {'x': '623', 'y': '160', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(35)}}],
+                     ['path', {'attrs': {'d': 'M 613 180 L 625 180', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                     ['path', {'attrs': {'d': `M 625 180 L 637 ${r.get('remote', 'adapter', 35, 0, "value") == "OFF" ? 170 : 179}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
+                     ['path', {'attrs': {'d': 'M 653 180 L 637 180', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+ 
+                     //switch6
+                     ['rect', {'attrs': {'x': '623', 'y': '200', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(36)}}],
+                     ['path', {'attrs': {'d': 'M 613 220 L 625 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                     ['path', {'attrs': {'d': `M 625 220 L 637 ${r.get('remote', 'adapter', 36, 0, "value") == "OFF" ? 210 : 219}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
+                     ['path', {'attrs': {'d': 'M 653 220 L 637 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+ 
+                     //switch7
+                     ['rect', {'attrs': {'x': '503', 'y': '200', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(37)}}],
+                     ['path', {'attrs': {'d': 'M 493 220 L 505 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                     ['path', {'attrs': {'d': `M 505 220 L 517 ${r.get('remote', 'adapter', 37, 0, "value") == "OFF" ? 210 : 219}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
+                     ['path', {'attrs': {'d': 'M 533 220 L 517 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                     
+                     ['rect', {'attrs': {'x': '93', 'y': '220', 'width': '20', 'height': '20', 'fill': '#000000', 'stroke': '#000000', 'pointer-events': 'none'}}],
+                     ['rect', {'attrs': {'x': '93', 'y': '250', 'width': '20', 'height': '20', 'fill': '#ff0000', 'stroke': '#000000', 'pointer-events': 'none'}}],
+                     ['rect', {'attrs': {'x': '93', 'y': '280', 'width': '20', 'height': '20', 'fill': '#006600', 'stroke': '#000000', 'pointer-events': 'none'}}],
+    
+    ];
+}
 
-                    //switch3
-                    ['rect', {'attrs': {'x': '623', 'y': '40', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(33)}}],
-                    ['path', {'attrs': {'d': 'M 613 60 L 625 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': `M 625 60 L 637 ${r.get('remote', 'adapter', 33, 0, "value") == "OFF" ? 50 : 59}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                    ['path', {'attrs': {'d': 'M 653 60 L 637 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
-                    //switch4
-                    ['rect', {'attrs': {'x': '623', 'y': '80', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(34)}}],
-                    ['path', {'attrs': {'d': 'M 613 100 L 625 100', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': `M 625 100 L 637 ${r.get('remote', 'adapter', 34, 0, "value") == "OFF" ? 90 : 99}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                    ['path', {'attrs': {'d': 'M 653 100 L 637 100', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+// main function which rerenders the pages and it's values every three seconds.
+export function vt() {
+    console.log("ping")
+    // prevents undefined text on screen
+    if (!(r.get('remote'))){
+        return ['div'];
+    }
+    plotDiv = ['div'];
+    // draws the table and plot if it needs to be drawn
+    let tableDiv = checkTableAndPlotDrawability()
 
-                    //switch5
-                    ['rect', {'attrs': {'x': '623', 'y': '160', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(35)}}],
-                    ['path', {'attrs': {'d': 'M 613 180 L 625 180', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': `M 625 180 L 637 ${r.get('remote', 'adapter', 35, 0, "value") == "OFF" ? 170 : 179}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                    ['path', {'attrs': {'d': 'M 653 180 L 637 180', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+    //draws text every time, saves many lines of duplicated code
+    // let textDiv = writeText();
+    let textDiv = writeText()
 
-                    //switch6
-                    ['rect', {'attrs': {'x': '623', 'y': '200', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(36)}}],
-                    ['path', {'attrs': {'d': 'M 613 220 L 625 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': `M 625 220 L 637 ${r.get('remote', 'adapter', 36, 0, "value") == "OFF" ? 210 : 219}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                    ['path', {'attrs': {'d': 'M 653 220 L 637 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+    //let plotDiv = drawPlot();
+    console.log('plotDiv:', plotDiv) 
 
-                    //switch7
-                    ['rect', {'attrs': {'x': '503', 'y': '200', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(37)}}],
-                    ['path', {'attrs': {'d': 'M 493 220 L 505 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': `M 505 220 L 517 ${r.get('remote', 'adapter', 37, 0, "value") == "OFF" ? 210 : 219}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                    ['path', {'attrs': {'d': 'M 533 220 L 517 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+    let linesDiv = getLines();
 
-                    ['rect', {'attrs': {'x': '93', 'y': '280', 'width': '20', 'height': '20', 'fill': '#006600', 'stroke': '#000000', 'pointer-events': 'none'}}],
-                    
+    return  ['div.main',
+                // svg 
+                ['svg', {'attrs': {'version': '1.1', 'width': '1700px', 'height': '800px', 'viewBox': '-0.5 -0.5 774 302', 'style': 'background-color: rgb(255, 255, 255);'}},
+                    linesDiv,
                     // text div is already in it's 'g' container
                     textDiv,
-                    
-                    // not sure if this is necessary
-                    // ['switch',
-                    //     ['g', {'attrs': {'requiredFeatures': 'http://www.w3.org/TR/SVG11/feature#Extensibility'}}],
-                    //     ['a', {'attrs': {'transform': 'translate(0,-5)', 'href': 'https://www.diagrams.net/doc/faq/svg-export-text-problems', 'target': '_blank'}},
-                    //         ['text', {'attrs': {'text-anchor': 'middle', 'font-size': '10px', 'x': '50%', 'y': '100%'}}, 'Viewer does not support full SVG 1.1']]],                  
-                ]
-            ],
-
-            // table
-            ['div.table_div',
-                tableDiv],
-            // plot
-            ['div.class5',
-                plotDiv],
-        ];
+                ],
+                // table
+                ['div.table_div',
+                    tableDiv
+                ],
+                // plot
+                ['div.class5',
+                    plotDiv
+                ],
+            ];
 }
