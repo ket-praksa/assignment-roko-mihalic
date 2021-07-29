@@ -11,9 +11,11 @@ import time
 import typing
 import json
 import hat.aio
+import logging
 json_schema_id = None
 json_schema_repo = None
 
+mlog: logging.Logger = logging.getLogger(__name__)
 
 async def create(conf: hatJson.Data) -> 'Backend':
     """Creates new Backend instance with connection to database
@@ -25,7 +27,8 @@ async def create(conf: hatJson.Data) -> 'Backend':
     """
     backend = Backend()
     backend._async_group = aio.Group()
-    backend._db_con = _init_db(conf)
+    backend.executor = aio.create_executor(1)
+    backend._db_con = await backend.executor(_init_db, conf)
     return backend
 
 def _init_db(conf):
@@ -54,8 +57,6 @@ def _init_db(conf):
 class Backend(common.Backend):
 
     last_entry = {}
-    table_values = ["BUS", "LINE", "TRANSFORMER", "SWITCH"]
-    #executor = hat.aio.create_executor(1)
 
     @property
     def async_group(self) -> aio.Group:
@@ -88,7 +89,6 @@ class Backend(common.Backend):
         Returns:
             list of events
         """
-        cur = self._db_con.cursor()
         for e in events:            
             event_type = e.event_type
             
@@ -106,7 +106,6 @@ class Backend(common.Backend):
             if not contains_key or current_time - datetime.timedelta(seconds=20) > Backend.last_entry[key]:
                 Backend.last_entry[key] = current_time
 
-                table = ""
                 if 0 <= asdu_address < 10:
                     table = "BUS"
                 elif 10 <= asdu_address < 20:
@@ -115,9 +114,9 @@ class Backend(common.Backend):
                     table = "TRANSFORMER"
                 elif 30 <= asdu_address < 40:
                     table = "SWITCH"
-                # else:
-                #     ##check
-                #     table = "ERRORS"
+                else:
+                    mlog.warning('Invalid asdu address')
+                    continue
 
                 if asdu_address in range(30, 40):
                     data["value"] = 1 if data["value"] == "ON" else 0
@@ -127,31 +126,10 @@ class Backend(common.Backend):
                         data["value"] = 0
 
                 data = float(data["value"])
-                #entries = await self.executor(fn, f"SELECT Count(*) FROM {table};")
-                #entries = await fn('SELECT COUNT(*) FROM', '{table}')
-
                 
-                #preventing all cases of sql injection
-                if table not in self.table_values:
-                    breakpoint()
-                    raise ValueError('potencial sql injection attack, given table name: ', table)
+                await self.executor(fn_delete_excess_data, self._db_con, table)
+                await self.executor(fn_insert_data, self._db_con, table, asdu_address, io_address, data)
 
-                entries = cur.execute(f"SELECT Count(*) FROM {table}")
-                entries = entries.fetchone()[0]
-                if entries > 50000:
-                    cur.execute(f"DELETE FROM {table} ORDER BY time LIMIT 1000")
-
-                cur.execute(f'INSERT INTO {table} (asdu, io, val) VALUES (?, ?, ?)', (asdu_address, io_address, data))
-                
-                    # breakpoint()
-                    # # if not isinstance(data["value"], float):
-                    # #     breakpoint() 
-                    # try:
-                    #     math.isnan(data["value"])
-                    # except:
-                    #     breakpoint()
-        self._db_con.commit()
-        # result = events
         return await self._async_group.spawn(aio.call, lambda: events)
 
     async def query(self, data: common.QueryData) -> typing.List[common.Event]:
@@ -164,33 +142,24 @@ class Backend(common.Backend):
             list of events with data from database
         """
         result = []
-        cur = self._db_con.cursor()
         event_type = data.event_types[0]
 
         if event_type[0] == "db":
             asdu_address = int(event_type[1])
-            #breakpoint()
 
-            if asdu_address in range(0, 10): 
+            if 0 <= asdu_address < 10:
                 table = "BUS"
-            elif asdu_address in range(10, 20):
+            elif 10 <= asdu_address < 20:
                 table = "LINE"
-            elif asdu_address in range(30, 40):
+            elif asdu_address == 20:
+                table = "TRANSFORMER"
+            elif 30 <= asdu_address < 40:
                 table = "SWITCH"
             else:
-                table = "TRANSFORMER"
-                
-            time_val = []
+                mlog.warning('Invalid asdu address')
+                return []
 
-            #preventing all cases of sql injection
-            if table not in self.table_values:
-                raise ValueError('potencial sql injection attack, given table name: ', table)
-
-            for asdu, val, io, time in cur.execute(
-                f"SELECT asdu, io, val, time FROM {table} WHERE asdu = {asdu_address} AND time >= datetime('now','-20 minutes','localtime')"):
-                if asdu in range(30, 40):
-                    val = "ON" if val == 1 else "OFF"
-                time_val.append(f"{asdu};{io};{time};{val}")
+            time_val = await self.executor(fn_get_asdu_db_data, self._db_con, table, asdu_address)
 
             event = hat.event.common.Event(
                 event_id=hat.event.common.EventId(server=1, instance=1),
@@ -203,3 +172,35 @@ class Backend(common.Backend):
             )
             result.append(event)
         return await self._async_group.spawn(aio.call, lambda: result)
+
+
+
+def fn_insert_data(_db_con, table, asdu_address, io_address, data):
+    cur = _db_con.cursor()
+    
+    cur.execute(f'INSERT INTO {table} (asdu, io, val) VALUES (?, ?, ?)', (asdu_address, io_address, data))   
+    
+    _db_con.commit()
+
+
+def fn_delete_excess_data(_db_con, table):
+    cur = _db_con.cursor()
+
+    entries = cur.execute(f"SELECT Count(*) FROM {table}")
+    entries = entries.fetchone()[0]
+    if entries > 50000:
+        cur.execute(f"DELETE FROM {table} ORDER BY time LIMIT 1000")
+    
+    _db_con.commit()
+
+def fn_get_asdu_db_data(_db_con, table, asdu_address):
+    cur = _db_con.cursor()
+
+    time_val = []
+    for asdu, val, io, time in cur.execute(
+        f"SELECT asdu, io, val, time FROM {table} WHERE asdu = {asdu_address} AND time >= datetime('now','-20 minutes','localtime')"):
+        if asdu in range(30, 40):
+            val = "ON" if val == 1 else "OFF"
+        time_val.append(f"{asdu};{io};{time};{val}")
+
+    return time_val

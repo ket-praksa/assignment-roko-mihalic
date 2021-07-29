@@ -60,7 +60,7 @@ class Adapter(hat.gui.common.Adapter):
         return self._async_group
 
     @property
-    def state(self) -> typing.Dict[str, hatJson.Data]: #check
+    def state(self) -> hatJson.Data: #check
         """Returns adapter state.
 
         Returns:

@@ -58,7 +58,7 @@ class DbAdapter(hat.gui.common.Adapter):
         return self._async_group
 
     @property
-    def state(self) -> typing.Dict[str, json.Data]: #check
+    def state(self) -> json.Data:
         """Returns adapter state.
 
         Returns:
@@ -91,6 +91,7 @@ class DbAdapter(hat.gui.common.Adapter):
     async def _main_loop(self):
         while True:
             events = await self._event_client.receive()
+            self._state_change_cb_registry.notify()
 
 
 class Session(hat.gui.common.AdapterSession):
@@ -111,7 +112,7 @@ class Session(hat.gui.common.AdapterSession):
         return self._async_group
 
     @property
-    def state(self) -> typing.Dict[str, json.Data]: #check
+    def state(self) -> json.Data:
         """Returns session state.
 
         Returns:
@@ -139,9 +140,11 @@ class Session(hat.gui.common.AdapterSession):
                 events = await self._adapter._event_client.query(
                     hat.event.common.QueryData(event_types=[["db", asdu]], max_results=1)
                 )
-
+                # handling wrong Asdu which returns []
+                if not events:
+                    continue
                 self._state = dict(self._state)
-                self._state["plot_data"] = events[0].payload.data 
+                self._state["plot_data"] = events[0].payload.data
                 self._on_state_change()
 
         except Exception as e:
