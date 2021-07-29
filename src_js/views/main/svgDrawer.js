@@ -300,67 +300,68 @@ export function getText() {
         ];    
 }
 
+export function getSwitchesLong(){
+    return [
+           {
+                  'x' : 237,
+                  'asdu' : 30
+           },
+           {
+                  'x' : 437,
+                  'asdu' : 31
+           }
+    ]
+}
 
-export function getLines(){
-    return ['g',        
-                    // switch0
-                    ['rect', {'attrs': {'x': '237.2', 'y': '125', 'width': '30', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(30)}}],
-                    ['path', {'attrs': {'d': 'M 213 140 L 237 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': `M 237 140 L 261 ${r.get('remote', 'adapter', 30, 0, "value") == "OFF" ? 130 : 139}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                    ['path', {'attrs': {'d': 'M 293 140 L 261 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+export function getSwitchesShort(){
+    return [
+           {
+                  'x' : 503,
+                  'y' : 40,
+                  'asdu' : 32
+           },
+           {
+                  'x' : 623,
+                  'y' : 40,
+                  'asdu' : 33
+           },
+           {
+                  'x' : 623,
+                  'y' : 80,
+                  'asdu' : 34
+           },
+           {
+                  'x' : 623,
+                  'y' : 160,
+                  'asdu' : 35
+           },
+           {
+                  'x' : 623,
+                  'y' : 200,
+                  'asdu' : 36
+           },
+           {
+                  'x' : 503,
+                  'y' : 200,
+                  'asdu' : 37
+           }
+    ];
+}
 
-                    //switch1
-                    ['rect', {'attrs': {'x': '437', 'y': '115', 'width': '30', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(31)}}],
-                    ['path', {'attrs': {'d': 'M 413 140 L 437 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': `M 437 140 L 461 ${r.get('remote', 'adapter', 31, 0, "value") == "OFF" ? 130 : 139}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                    ['path', {'attrs': {'d': 'M 493 140 L 461 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
-                    //switch2
-                    ['rect', {'attrs': {'x': '503', 'y': '40', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(32)}}],
-                    ['path', {'attrs': {'d': 'M 493 60 L 505 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': `M 505 60 L 517 ${r.get('remote', 'adapter', 32, 0, "value") == "OFF" ? 50 : 59}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                    ['path', {'attrs': {'d': 'M 533 60 L 517 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-
-                    //switch3
-                    ['rect', {'attrs': {'x': '623', 'y': '40', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(33)}}],
-                    ['path', {'attrs': {'d': 'M 613 60 L 625 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': `M 625 60 L 637 ${r.get('remote', 'adapter', 33, 0, "value") == "OFF" ? 50 : 59}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                    ['path', {'attrs': {'d': 'M 653 60 L 637 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-
-                    //switch4
-                    ['rect', {'attrs': {'x': '623', 'y': '80', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(34)}}],
-                    ['path', {'attrs': {'d': 'M 613 100 L 625 100', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': `M 625 100 L 637 ${r.get('remote', 'adapter', 34, 0, "value") == "OFF" ? 90 : 99}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                    ['path', {'attrs': {'d': 'M 653 100 L 637 100', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-
-                    //switch5
-                    ['rect', {'attrs': {'x': '623', 'y': '160', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(35)}}],
-                    ['path', {'attrs': {'d': 'M 613 180 L 625 180', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': `M 625 180 L 637 ${r.get('remote', 'adapter', 35, 0, "value") == "OFF" ? 170 : 179}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                    ['path', {'attrs': {'d': 'M 653 180 L 637 180', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-
-                    //switch6
-                    ['rect', {'attrs': {'x': '623', 'y': '200', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(36)}}],
-                    ['path', {'attrs': {'d': 'M 613 220 L 625 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': `M 625 220 L 637 ${r.get('remote', 'adapter', 36, 0, "value") == "OFF" ? 210 : 219}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                    ['path', {'attrs': {'d': 'M 653 220 L 637 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-
-                    //switch7
-                    ['rect', {'attrs': {'x': '503', 'y': '200', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(37)}}],
-                    ['path', {'attrs': {'d': 'M 493 220 L 505 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': `M 505 220 L 517 ${r.get('remote', 'adapter', 37, 0, "value") == "OFF" ? 210 : 219}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                    ['path', {'attrs': {'d': 'M 533 220 L 517 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    
-                    ['rect', {'attrs': {'x': '93', 'y': '220', 'width': '20', 'height': '20', 'fill': '#000000', 'stroke': '#000000', 'pointer-events': 'none'}}],
-                    ['rect', {'attrs': {'x': '93', 'y': '250', 'width': '20', 'height': '20', 'fill': '#ff0000', 'stroke': '#000000', 'pointer-events': 'none'}}],
-                    ['rect', {'attrs': {'x': '93', 'y': '280', 'width': '20', 'height': '20', 'fill': '#006600', 'stroke': '#000000', 'pointer-events': 'none'}}],
-                    
-                    
-                    
-                    // not sure if this is necessary
-                    // ['switch',
-                    //     ['g', {'attrs': {'requiredFeatures': 'http://www.w3.org/TR/SVG11/feature#Extensibility'}}],
-                    //     ['a', {'attrs': {'transform': 'translate(0,-5)', 'href': 'https://www.diagrams.net/doc/faq/svg-export-text-problems', 'target': '_blank'}},
-                    //         ['text', {'attrs': {'text-anchor': 'middle', 'font-size': '10px', 'x': '50%', 'y': '100%'}}, 'Viewer does not support full SVG 1.1']]],                  
-                ]
+export function getLegend(){
+    return [
+           {
+                  'y': '220',
+                  'fill': '#000000'
+           },
+           {
+                  'y': '250',
+                  'fill': '#ff0000'
+           },
+           {
+                  'y': '280',
+                  'fill': '#006600'
+           }     
+    ];
 }

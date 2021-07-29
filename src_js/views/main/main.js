@@ -1,5 +1,5 @@
 import 'main/index.scss';
-import { getText } from './svgDrawer'; //getLines,
+import { getLegend, getSwitchesLong, getSwitchesShort, getText } from './svgDrawer';
 import * as plotly from 'plotly.js-dist/plotly.js';
 
 let plotDiv = ['div'];
@@ -20,7 +20,7 @@ export function plot(data, args, layout, config) {
         let ioFromData = parseInt(dataEach.split(';')[3])
         allData[ioFromData].push(dataEach)
     }
-    console.log('all data:' ,allData)
+    console.log('all data: ', allData)
 
     let format_data = []
     for(let i = 0; i < 5; i++){
@@ -45,9 +45,7 @@ export function plot(data, args, layout, config) {
             type: 'scatter', 
             name: `${args[i+1]}`, // trace name from args
 
-        }
-        //console.log('format each: ', format_data_each)
-       
+        }       
         format_data.push(format_data_each)
     }
 
@@ -74,8 +72,7 @@ function changeState(changedSwitch){
     console.log(`hit switch number: ${changedSwitch}`);
 
     let changedSwitchValue = r.get('remote', 'adapter', changedSwitch, 0, "value");
-    // let changedSwitchIO = r.get('remote', 'adapter', 'switch', changedSwitch, "io_address");
-    console.log(changedSwitchValue)
+
     if(changedSwitchValue === 'ON'){
         changedSwitchValue = 'OFF';
     } else {
@@ -83,7 +80,6 @@ function changeState(changedSwitch){
     }
     hat.conn.send('adapter', {asdu: changedSwitch,
                               value: changedSwitchValue});
-    // changeTableVisibility(changedSwitch);
 }
 
 
@@ -211,7 +207,41 @@ function writeText() {
     return outputText;
 }
 
+function writeLegend(){
+    let legendOutput = getLegend().map(legendData =>
+        ['rect', {'attrs': {'x': '93', 'y': `${legendData["y"]}`, 'width': '20', 'height': '20', 'fill': `${legendData["fill"]}`, 'stroke': '#000000', 'pointer-events': 'none'}}]
+    )
+    return legendOutput
+}
+
+function writeLongSwitches(){
+    let longSwitchOutput = getSwitchesLong().map(switchData => 
+            [['rect', {'attrs': {'x': `${switchData["x"]}`, 'y': '120', 'width': '30', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(`${switchData["asdu"]}`)}}],
+            ['path', {'attrs': {'d': `M ${switchData["x"]-24} 140 L ${switchData["x"]} 140`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+            ['path', {'attrs': {'d': `M ${switchData["x"]} 140 L ${switchData["x"]+24} ${r.get('remote', 'adapter', `${switchData["asdu"]}`, 0, "value") == "OFF" ? 130 : 139}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
+            ['path', {'attrs': {'d': `M ${switchData["x"]+56} 140 L ${switchData["x"]+24} 140`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}]]
+        );
+    
+    return longSwitchOutput;
+}
+
+
+function writeShortSwitches(){
+    let shortSwitchOutput = getSwitchesShort().map(switchData => 
+            [['rect', {'attrs': {'x': `${switchData["x"]}`, 'y': `${switchData["y"]}`, 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(`${switchData["asdu"]}`)}}],
+            ['path', {'attrs': {'d': `M ${switchData["x"]-10} ${switchData["y"]+20} L ${switchData["x"]+2} ${switchData["y"]+20}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+            ['path', {'attrs': {'d': `M ${switchData["x"]+2} ${switchData["y"]+20} L ${switchData["x"]+14} ${r.get('remote', 'adapter', `${switchData["asdu"]}`, 0, "value") == "OFF" ? `${switchData["y"]+10}` : `${switchData["y"]+19}`}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
+            ['path', {'attrs': {'d': `M ${switchData["x"]+30} ${switchData["y"]+20} L ${switchData["x"]+14} ${switchData["y"]+20}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}]]
+        );
+    console.log(shortSwitchOutput)
+    return shortSwitchOutput;
+}
+
 function getLines() {
+    let legendRects = writeLegend()
+    let longSwitches = writeLongSwitches()
+    let shortSwitches = writeShortSwitches()
+
     return ['g',
                     //title
                     ['text', {'attrs': {'x': '200', 'y': '40', 'fill': '#000000', 'font-family': 'Helvetica', 'font-size': '30px', 'text-anchor': 'middle'}}, 'IEC 60870-5-104'],
@@ -259,58 +289,12 @@ function getLines() {
                     ['path', {'attrs': {'d': 'M 413 180 L 413 100', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(3)}}],
                     ['path', {'attrs': {'d': 'M 413 140 L 403 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
-                     // switch0
-                     ['rect', {'attrs': {'x': '237.2', 'y': '125', 'width': '30', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(30)}}],
-                     ['path', {'attrs': {'d': 'M 213 140 L 237 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                     ['path', {'attrs': {'d': `M 237 140 L 261 ${r.get('remote', 'adapter', 30, 0, "value") == "OFF" ? 130 : 139}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                     ['path', {'attrs': {'d': 'M 293 140 L 261 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
- 
-                     //switch1
-                     ['rect', {'attrs': {'x': '437', 'y': '115', 'width': '30', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(31)}}],
-                     ['path', {'attrs': {'d': 'M 413 140 L 437 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                     ['path', {'attrs': {'d': `M 437 140 L 461 ${r.get('remote', 'adapter', 31, 0, "value") == "OFF" ? 130 : 139}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                     ['path', {'attrs': {'d': 'M 493 140 L 461 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
- 
-                     //switch2
-                     ['rect', {'attrs': {'x': '503', 'y': '40', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(32)}}],
-                     ['path', {'attrs': {'d': 'M 493 60 L 505 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                     ['path', {'attrs': {'d': `M 505 60 L 517 ${r.get('remote', 'adapter', 32, 0, "value") == "OFF" ? 50 : 59}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                     ['path', {'attrs': {'d': 'M 533 60 L 517 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
- 
-                     //switch3
-                     ['rect', {'attrs': {'x': '623', 'y': '40', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(33)}}],
-                     ['path', {'attrs': {'d': 'M 613 60 L 625 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                     ['path', {'attrs': {'d': `M 625 60 L 637 ${r.get('remote', 'adapter', 33, 0, "value") == "OFF" ? 50 : 59}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                     ['path', {'attrs': {'d': 'M 653 60 L 637 60', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
- 
-                     //switch4
-                     ['rect', {'attrs': {'x': '623', 'y': '80', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(34)}}],
-                     ['path', {'attrs': {'d': 'M 613 100 L 625 100', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                     ['path', {'attrs': {'d': `M 625 100 L 637 ${r.get('remote', 'adapter', 34, 0, "value") == "OFF" ? 90 : 99}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                     ['path', {'attrs': {'d': 'M 653 100 L 637 100', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
- 
-                     //switch5
-                     ['rect', {'attrs': {'x': '623', 'y': '160', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(35)}}],
-                     ['path', {'attrs': {'d': 'M 613 180 L 625 180', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                     ['path', {'attrs': {'d': `M 625 180 L 637 ${r.get('remote', 'adapter', 35, 0, "value") == "OFF" ? 170 : 179}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                     ['path', {'attrs': {'d': 'M 653 180 L 637 180', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
- 
-                     //switch6
-                     ['rect', {'attrs': {'x': '623', 'y': '200', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(36)}}],
-                     ['path', {'attrs': {'d': 'M 613 220 L 625 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                     ['path', {'attrs': {'d': `M 625 220 L 637 ${r.get('remote', 'adapter', 36, 0, "value") == "OFF" ? 210 : 219}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                     ['path', {'attrs': {'d': 'M 653 220 L 637 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
- 
-                     //switch7
-                     ['rect', {'attrs': {'x': '503', 'y': '200', 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(37)}}],
-                     ['path', {'attrs': {'d': 'M 493 220 L 505 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                     ['path', {'attrs': {'d': `M 505 220 L 517 ${r.get('remote', 'adapter', 37, 0, "value") == "OFF" ? 210 : 219}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-                     ['path', {'attrs': {'d': 'M 533 220 L 517 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                     
-                     ['rect', {'attrs': {'x': '93', 'y': '220', 'width': '20', 'height': '20', 'fill': '#000000', 'stroke': '#000000', 'pointer-events': 'none'}}],
-                     ['rect', {'attrs': {'x': '93', 'y': '250', 'width': '20', 'height': '20', 'fill': '#ff0000', 'stroke': '#000000', 'pointer-events': 'none'}}],
-                     ['rect', {'attrs': {'x': '93', 'y': '280', 'width': '20', 'height': '20', 'fill': '#006600', 'stroke': '#000000', 'pointer-events': 'none'}}],
-    
+                    longSwitches,
+
+                    shortSwitches,
+
+                    legendRects
+                         
     ];
 }
 
@@ -327,11 +311,7 @@ export function vt() {
     let tableDiv = checkTableAndPlotDrawability()
 
     //draws text every time, saves many lines of duplicated code
-    // let textDiv = writeText();
     let textDiv = writeText()
-
-    //let plotDiv = drawPlot();
-    console.log('plotDiv:', plotDiv) 
 
     let linesDiv = getLines();
 

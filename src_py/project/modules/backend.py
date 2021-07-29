@@ -127,8 +127,8 @@ class Backend(common.Backend):
 
                 data = float(data["value"])
                 
-                await self.executor(fn_delete_excess_data, self._db_con, table)
-                await self.executor(fn_insert_data, self._db_con, table, asdu_address, io_address, data)
+                await self.executor(_fn_delete_excess_data, self._db_con, table)
+                await self.executor(_fn_insert_data, self._db_con, table, asdu_address, io_address, data)
 
         return await self._async_group.spawn(aio.call, lambda: events)
 
@@ -159,7 +159,7 @@ class Backend(common.Backend):
                 mlog.warning('Invalid asdu address')
                 return []
 
-            time_val = await self.executor(fn_get_asdu_db_data, self._db_con, table, asdu_address)
+            time_val = await self.executor(_fn_get_asdu_db_data, self._db_con, table, asdu_address)
 
             event = hat.event.common.Event(
                 event_id=hat.event.common.EventId(server=1, instance=1),
@@ -175,7 +175,7 @@ class Backend(common.Backend):
 
 
 
-def fn_insert_data(_db_con, table, asdu_address, io_address, data):
+def _fn_insert_data(_db_con, table, asdu_address, io_address, data):
     cur = _db_con.cursor()
     
     cur.execute(f'INSERT INTO {table} (asdu, io, val) VALUES (?, ?, ?)', (asdu_address, io_address, data))   
@@ -183,7 +183,7 @@ def fn_insert_data(_db_con, table, asdu_address, io_address, data):
     _db_con.commit()
 
 
-def fn_delete_excess_data(_db_con, table):
+def _fn_delete_excess_data(_db_con, table):
     cur = _db_con.cursor()
 
     entries = cur.execute(f"SELECT Count(*) FROM {table}")
@@ -193,7 +193,7 @@ def fn_delete_excess_data(_db_con, table):
     
     _db_con.commit()
 
-def fn_get_asdu_db_data(_db_con, table, asdu_address):
+def _fn_get_asdu_db_data(_db_con, table, asdu_address):
     cur = _db_con.cursor()
 
     time_val = []
