@@ -5,7 +5,6 @@ import * as plotly from 'plotly.js-dist/plotly.js';
 let plotDiv = ['div'];
     
 export function plot(data, args, layout, config) {
-    console.log(data)
     let asduAddress = data[0].split(';')[0]
     
     let allData = {
@@ -20,7 +19,6 @@ export function plot(data, args, layout, config) {
         let ioFromData = parseInt(dataEach.split(';')[3])
         allData[ioFromData].push(dataEach)
     }
-    console.log('all data: ', allData)
 
     let format_data = []
     for(let i = 0; i < 5; i++){
@@ -30,7 +28,7 @@ export function plot(data, args, layout, config) {
             continue
         }
 
-        console.log('dataForEachIo: ' ,dataForEachIo)
+        // console.log('dataForEachIo: ' ,dataForEachIo)
         let xCoords = []
         let yCoords = []
         for(let dataArrayElem of dataForEachIo){
@@ -49,7 +47,7 @@ export function plot(data, args, layout, config) {
         format_data.push(format_data_each)
     }
 
-    console.log('plot data: ', format_data)
+    // console.log('plot data: ', format_data)
 
     layout = {title: `Asdu address: ${asduAddress}`};
 
@@ -69,7 +67,7 @@ export function plot(data, args, layout, config) {
 
 
 function changeState(changedSwitch){
-    console.log(`hit switch number: ${changedSwitch}`);
+    console.log(`Hit switch number: ${changedSwitch}`);
 
     let changedSwitchValue = r.get('remote', 'adapter', changedSwitch, 0, "value");
 
@@ -86,7 +84,7 @@ function changeState(changedSwitch){
 function changeTableVisibility(chosenElement){
     // getting data value to find which(if any element was visible)
     let tableValue = r.get('data', 'table_visible')
-    console.log('table value for asdu address: ', chosenElement, ' is: ', tableValue)
+    console.log('Table value for asdu address: ', chosenElement, ' is: ', tableValue)
 
     // closing table by clicking the same element twice
     if(tableValue === chosenElement){
@@ -111,7 +109,7 @@ function checkTableAndPlotDrawability() {
     if(asduAddress === undefined){
         return ['div'];
     }
-    console.log('asdu', asduAddress);
+    console.log('Asdu address: ', asduAddress);
     
 
     // all table elements are saved into a tableDiv array
@@ -153,7 +151,7 @@ function checkTableAndPlotDrawability() {
     for(let listElem of tableContent){
         tableDiv.push(listElem);
     }
-    console.log('Json tablice:',JSON.stringify(tableDiv))
+    // console.log('Json tablice:',JSON.stringify(tableDiv))
     return tableDiv;
 }
 
@@ -162,7 +160,7 @@ function checkTableAndPlotDrawability() {
 function drawTableAndPlot(asduAddress, ioNumber, ...args) {
 
     let plotDataRaw = r.get('remote', 'db_adapter', 'plot_data')
-    console.log('db:', plotDataRaw)
+    // console.log('db data: ', plotDataRaw)
 
     if(plotDataRaw !== undefined && plotDataRaw !== []) {
         let outputPlot = plot(plotDataRaw, args)
@@ -192,6 +190,21 @@ function drawTableAndPlot(asduAddress, ioNumber, ...args) {
     return outputTable;
 }
 
+function refreshPlot() {
+    console.log('Refreshing...')
+    let asduAddress = r.get('data', 'table_visible');
+    // returns empty div, nothing is being drawn
+    if(asduAddress === undefined){
+        return
+    }
+
+    hat.conn.send('db_adapter', {
+        'asdu': asduAddress,
+    })
+    console.log('Refreshed!')
+
+}
+
 // all text and their respected values and location is saved in an array of objects
 // some settings are used on all text elements while their location, colour and text varies
 function writeText() {
@@ -214,6 +227,7 @@ function writeLegend(){
     return legendOutput
 }
 
+// switches number 1 and 2
 function writeLongSwitches(){
     let longSwitchOutput = getSwitchesLong().map(switchData => 
             [['rect', {'attrs': {'x': `${switchData["x"]}`, 'y': '120', 'width': '30', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(`${switchData["asdu"]}`)}}],
@@ -225,7 +239,7 @@ function writeLongSwitches(){
     return longSwitchOutput;
 }
 
-
+// switches number 3, 4, 5, 6, 7
 function writeShortSwitches(){
     let shortSwitchOutput = getSwitchesShort().map(switchData => 
             [['rect', {'attrs': {'x': `${switchData["x"]}`, 'y': `${switchData["y"]}`, 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(`${switchData["asdu"]}`)}}],
@@ -233,14 +247,14 @@ function writeShortSwitches(){
             ['path', {'attrs': {'d': `M ${switchData["x"]+2} ${switchData["y"]+20} L ${switchData["x"]+14} ${r.get('remote', 'adapter', `${switchData["asdu"]}`, 0, "value") == "OFF" ? `${switchData["y"]+10}` : `${switchData["y"]+19}`}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
             ['path', {'attrs': {'d': `M ${switchData["x"]+30} ${switchData["y"]+20} L ${switchData["x"]+14} ${switchData["y"]+20}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}]]
         );
-    console.log(shortSwitchOutput)
+
     return shortSwitchOutput;
 }
 
 function getLines() {
-    let legendRects = writeLegend()
     let longSwitches = writeLongSwitches()
     let shortSwitches = writeShortSwitches()
+    let legendRects = writeLegend()
 
     return ['g',
                     //title
@@ -289,12 +303,13 @@ function getLines() {
                     ['path', {'attrs': {'d': 'M 413 180 L 413 100', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(3)}}],
                     ['path', {'attrs': {'d': 'M 413 140 L 403 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
+                    ['rect', {'attrs': {'x': '580', 'y': '280', 'width': '60', 'height': '35', 'fill': '#ff7f0e', 'stroke': '#000000'}, on : { click: () => refreshPlot()}}],
+
                     longSwitches,
 
                     shortSwitches,
 
                     legendRects
-                         
     ];
 }
 

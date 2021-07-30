@@ -296,6 +296,15 @@ export function getText() {
                 "color-fill" : '#000000',
                 "text" :  'External grid',
                 "x" : '23'
+            },
+            {
+                "justify" : 'center',
+                "width" : 38,
+                "padding" : 298,
+                "margin" : 592,
+                "color-fill" : '#000000',
+                "text" :  'Refresh plot',
+                "x" : '611'
             }
         ];    
 }
