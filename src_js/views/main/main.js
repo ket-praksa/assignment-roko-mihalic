@@ -28,7 +28,7 @@ export function plot(data, args, layout, config) {
             continue
         }
 
-        // console.log('dataForEachIo: ' ,dataForEachIo)
+        // console.log('dataForEachIo: ', dataForEachIo)
         let xCoords = []
         let yCoords = []
         for(let dataArrayElem of dataForEachIo){
@@ -42,7 +42,6 @@ export function plot(data, args, layout, config) {
             y: yCoords, // simulator values
             type: 'scatter', 
             name: `${args[i+1]}`, // trace name from args
-
         }       
         format_data.push(format_data_each)
     }
@@ -222,7 +221,7 @@ function writeText() {
 
 function writeLegend(){
     let legendOutput = getLegend().map(legendData =>
-        ['rect', {'attrs': {'x': '93', 'y': `${legendData["y"]}`, 'width': '20', 'height': '20', 'fill': `${legendData["fill"]}`, 'stroke': '#000000', 'pointer-events': 'none'}}]
+        ['rect', {'attrs': {'x': '93', 'y': `${legendData["y"]}`, 'width': '20', 'height': '20', 'fill': `${legendData["fill"]}`, 'stroke': '#ffffff', 'pointer-events': 'none'}}]
     )
     return legendOutput
 }
@@ -230,10 +229,10 @@ function writeLegend(){
 // switches number 1 and 2
 function writeLongSwitches(){
     let longSwitchOutput = getSwitchesLong().map(switchData => 
-            [['rect', {'attrs': {'x': `${switchData["x"]}`, 'y': '120', 'width': '30', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(`${switchData["asdu"]}`)}}],
-            ['path', {'attrs': {'d': `M ${switchData["x"]-24} 140 L ${switchData["x"]} 140`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-            ['path', {'attrs': {'d': `M ${switchData["x"]} 140 L ${switchData["x"]+24} ${r.get('remote', 'adapter', `${switchData["asdu"]}`, 0, "value") == "OFF" ? 130 : 139}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-            ['path', {'attrs': {'d': `M ${switchData["x"]+56} 140 L ${switchData["x"]+24} 140`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}]]
+            [['rect', {'attrs': {'x': `${switchData["x"]}`, 'y': '120', 'width': '30', 'height': '30', 'fill': '#181f1a', 'stroke': '#181f1a'}, on : { click: () => changeState(`${switchData["asdu"]}`)}}],
+            ['path', {'attrs': {'d': `M ${switchData["x"]-24} 140 L ${switchData["x"]} 140`, 'fill': 'none', 'stroke': '#006600', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+            ['path', {'attrs': {'d': `M ${switchData["x"]} 140 L ${switchData["x"]+24} ${r.get('remote', 'adapter', `${switchData["asdu"]}`, 0, "value") == "OFF" ? 130 : 139}`, 'fill': 'none', 'stroke': '#006600', 'stroke-miterlimit': '10'}}],
+            ['path', {'attrs': {'d': `M ${switchData["x"]+56} 140 L ${switchData["x"]+24} 140`, 'fill': 'none', 'stroke': '#006600', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}]]
         );
     
     return longSwitchOutput;
@@ -242,10 +241,10 @@ function writeLongSwitches(){
 // switches number 3, 4, 5, 6, 7
 function writeShortSwitches(){
     let shortSwitchOutput = getSwitchesShort().map(switchData => 
-            [['rect', {'attrs': {'x': `${switchData["x"]}`, 'y': `${switchData["y"]}`, 'width': '18', 'height': '30', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeState(`${switchData["asdu"]}`)}}],
-            ['path', {'attrs': {'d': `M ${switchData["x"]-10} ${switchData["y"]+20} L ${switchData["x"]+2} ${switchData["y"]+20}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-            ['path', {'attrs': {'d': `M ${switchData["x"]+2} ${switchData["y"]+20} L ${switchData["x"]+14} ${r.get('remote', 'adapter', `${switchData["asdu"]}`, 0, "value") == "OFF" ? `${switchData["y"]+10}` : `${switchData["y"]+19}`}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10'}}],
-            ['path', {'attrs': {'d': `M ${switchData["x"]+30} ${switchData["y"]+20} L ${switchData["x"]+14} ${switchData["y"]+20}`, 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}]]
+            [['rect', {'attrs': {'x': `${switchData["x"]}`, 'y': `${switchData["y"]}`, 'width': '18', 'height': '30', 'fill': '#181f1a', 'stroke': '#181f1a'}, on : { click: () => changeState(`${switchData["asdu"]}`)}}],
+            ['path', {'attrs': {'d': `M ${switchData["x"]-10} ${switchData["y"]+20} L ${switchData["x"]+2} ${switchData["y"]+20}`, 'fill': 'none', 'stroke': '#006600', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+            ['path', {'attrs': {'d': `M ${switchData["x"]+2} ${switchData["y"]+20} L ${switchData["x"]+14} ${r.get('remote', 'adapter', `${switchData["asdu"]}`, 0, "value") == "OFF" ? `${switchData["y"]+10}` : `${switchData["y"]+19}`}`, 'fill': 'none', 'stroke': '#006600', 'stroke-miterlimit': '10'}}],
+            ['path', {'attrs': {'d': `M ${switchData["x"]+30} ${switchData["y"]+20} L ${switchData["x"]+14} ${switchData["y"]+20}`, 'fill': 'none', 'stroke': '#006600', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}]]
         );
 
     return shortSwitchOutput;
@@ -258,52 +257,52 @@ function getLines() {
 
     return ['g',
                     //title
-                    ['text', {'attrs': {'x': '200', 'y': '40', 'fill': '#000000', 'font-family': 'Helvetica', 'font-size': '30px', 'text-anchor': 'middle'}}, 'IEC 60870-5-104'],
+                    ['text', {'attrs': {'x': '200', 'y': '40', 'fill': '#ffffff', 'font-family': 'Helvetica', 'font-size': '30px', 'text-anchor': 'middle'}}, 'IEC 60870-5-104'],
 
-                    ['path', {'attrs': {'d': 'M 53 140 L 15.24 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'stroke'}}],
-                    ['path', {'attrs': {'d': 'M 27.12 133.5 L 14.12 140 L 27.12 146.5', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'all'}}],
-                    ['path', {'attrs': {'d': 'M 93 180 L 93 100', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10', 'pointer-events': 'stroke'}, on : { click: () => changeTableVisibility(0)}}],
-                    ['path', {'attrs': {'d': 'M 93 140 L 53 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'stroke'}}],
-                    ['path', {'attrs': {'d': 'M 93 140 L 207.76 140', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '2', 'stroke-miterlimit': '10', 'pointer-events': 'stroke'}, on : { click: () => changeTableVisibility(10)}}],
-                    ['path', {'attrs': {'d': 'M 210.76 140 L 206.76 142 L 207.76 140 L 206.76 138 Z', 'fill': '#000000', 'stroke': '#000000', 'stroke-width': '2', 	'stroke-miterlimit': '10', 'pointer-events': 'all'}}],
-                    ['path', {'attrs': {'d': 'M 213 180 L 213 100', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10', 'pointer-events': 'stroke'}, on : { click: () => changeTableVisibility(1)}}],
-                    ['path', {'attrs': {'d': 'M 293 180 L 293 100', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(2)}}],
-                    ['rect', {'attrs': {'x': '320.2', 'y': '230', 'width': '25.6', 'height': '10', 'fill': '#ffffff', 'stroke': '#000000', 'transform': 'rotate(90,333,235)', 	'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': 'M 313 235 L 320.2 235 M 345.8 235 L 353 235', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'transform': 	'rotate(90,333,235)', 'pointer-events': 'none'}}],
-                    ['ellipse', {'attrs': {'cx': '329', 'cy': '235', 'rx': '2', 'ry': '2.5', 'fill': 'none', 'stroke': '#000000', 'transform': 'rotate(90,333,235)', 	'pointer-events': 'none'}}],
-                    ['ellipse', {'attrs': {'cx': '337', 'cy': '235', 'rx': '2', 'ry': '2.5', 'fill': 'none', 'stroke': '#000000', 'transform': 'rotate(90,333,235)', 	'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': 'M 333 215 L 333.03 170 L 293 170', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': 'M 333 255 L 333 270', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': 'M 313 270 L 353 270', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': 'M 318 275 L 348 275', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': 'M 323 280 L 343 280', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': 'M 53 140 L 15.24 140', 'fill': 'none', 'stroke': '#ffffff', 'stroke-miterlimit': '10', 'pointer-events': 'stroke'}}],
+                    ['path', {'attrs': {'d': 'M 27.12 133.5 L 14.12 140 L 27.12 146.5', 'fill': 'none', 'stroke': '#ffffff', 'stroke-miterlimit': '10', 'pointer-events': 'all'}}],
+                    ['path', {'attrs': {'d': 'M 93 180 L 93 100', 'fill': 'none', 'stroke': '#43a0c4', 'stroke-width': '5', 'stroke-miterlimit': '10', 'pointer-events': 'stroke'}, on : { click: () => changeTableVisibility(0)}}],
+                    ['path', {'attrs': {'d': 'M 93 140 L 53 140', 'fill': 'none', 'stroke': '#ffffff', 'stroke-miterlimit': '10', 'pointer-events': 'stroke'}}],
+                    ['path', {'attrs': {'d': 'M 93 140 L 207.76 140', 'fill': 'none', 'stroke': '#ff0000', 'stroke-width': '2', 'stroke-miterlimit': '10', 'pointer-events': 'stroke'}, on : { click: () => changeTableVisibility(10)}}],
+                    ['path', {'attrs': {'d': 'M 210.76 140 L 206.76 142 L 207.76 140 L 206.76 138 Z', 'fill': '#ff0000', 'stroke': '#ff0000', 'stroke-width': '2', 	'stroke-miterlimit': '10', 'pointer-events': 'all'}}],
+                    ['path', {'attrs': {'d': 'M 213 180 L 213 100', 'fill': 'none', 'stroke': '#43a0c4', 'stroke-width': '5', 'stroke-miterlimit': '10', 'pointer-events': 'stroke'}, on : { click: () => changeTableVisibility(1)}}],
+                    ['path', {'attrs': {'d': 'M 293 180 L 293 100', 'fill': 'none', 'stroke': '#43a0c4', 'stroke-width': '5', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(2)}}],
+                    ['rect', {'attrs': {'x': '320.2', 'y': '230', 'width': '25.6', 'height': '10', 'fill': '#ffffff', 'stroke': '#181f1a', 'transform': 'rotate(90,333,235)', 	'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': 'M 313 235 L 320.2 235 M 345.8 235 L 353 235', 'fill': 'none', 'stroke': '#ffffff', 'stroke-miterlimit': '10', 'transform': 	'rotate(90,333,235)', 'pointer-events': 'none'}}],
+                    ['ellipse', {'attrs': {'cx': '329', 'cy': '235', 'rx': '2', 'ry': '2.5', 'fill': 'none', 'stroke': '#181f1a', 'transform': 'rotate(90,333,235)', 	'pointer-events': 'none'}}],
+                    ['ellipse', {'attrs': {'cx': '337', 'cy': '235', 'rx': '2', 'ry': '2.5', 'fill': 'none', 'stroke': '#181f1a', 'transform': 'rotate(90,333,235)', 	'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': 'M 333 215 L 333.03 170 L 293 170', 'fill': 'none', 'stroke': '#ffffff', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': 'M 333 255 L 333 270', 'fill': 'none', 'stroke': '#ffffff', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': 'M 313 270 L 353 270', 'fill': 'none', 'stroke': '#ffffff', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': 'M 318 275 L 348 275', 'fill': 'none', 'stroke': '#ffffff', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': 'M 323 280 L 343 280', 'fill': 'none', 'stroke': '#ffffff', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
                     //trafo
-                    ['rect', {'attrs': {'x': '312', 'y': '115', 'width': '80', 'height': '50', 'fill': '#ffffff', 'stroke': '#ffffff'}, on : { click: () => changeTableVisibility(20)}}],
-                    ['ellipse', {'attrs': {'cx': '337.78', 'cy': '140', 'rx': '21.73913043478261', 'ry': '20', 'fill': 'none', 'stroke': '#000000'}}],
-                    ['ellipse', {'attrs': {'cx': '368.22', 'cy': '140', 'rx': '21.73913043478261', 'ry': '20', 'fill': 'none', 'stroke': '#000000'}}],
-                    ['path', {'attrs': {'d': 'M 303 140 L 316.04 140 M 389.96 140 L 403 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 	'none'}}],
-                    ['path', {'attrs': {'d': 'M 303 140 L 293 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': 'M 493 260 L 493 20', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(4)}}],
-                    ['path', {'attrs': {'d': 'M 533 60 L 607.76 60', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '2', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(11)}}],
-                    ['path', {'attrs': {'d': 'M 610.76 60 L 606.76 62 L 607.76 60 L 606.76 58 Z', 'fill': '#000000', 'stroke': '#000000', 'stroke-width': '2', 'stroke-miterlimit': 	'10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': 'M 538.24 220 L 613 220', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '2', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(13)}}],
-                    ['path', {'attrs': {'d': 'M 535.24 220 L 539.24 218 L 538.24 220 L 539.24 222 Z', 'fill': '#000000', 'stroke': '#000000', 'stroke-width': '2', 	'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': 'M 653 120 L 653 40', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(5)}}],
-                    ['path', {'attrs': {'d': 'M 653 240 L 653 160', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(6)}}],
-                    ['path', {'attrs': {'d': 'M 607.76 180 L 593.03 180 L 593.03 100 L 613 100', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '2', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(12)}}],
-                    ['path', {'attrs': {'d': 'M 610.76 180 L 606.76 182 L 607.76 180 L 606.76 178 Z', 'fill': '#000000', 'stroke': '#000000', 'stroke-width': '2', 	'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': 'M 653 80 L 683 80', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['ellipse', {'attrs': {'cx': '693', 'cy': '80', 'rx': '10', 'ry': '10', 'fill': '#ffffff', 'stroke': '#000000', 'pointer-events': 'none'}}],
+                    ['rect', {'attrs': {'x': '312', 'y': '115', 'width': '80', 'height': '50', 'fill': '#181f1a', 'stroke': '#181f1a'}, on : { click: () => changeTableVisibility(20)}}],
+                    ['ellipse', {'attrs': {'cx': '337.78', 'cy': '140', 'rx': '21.73913043478261', 'ry': '20', 'fill': 'none', 'stroke': '#c0eb34'}}],
+                    ['ellipse', {'attrs': {'cx': '368.22', 'cy': '140', 'rx': '21.73913043478261', 'ry': '20', 'fill': 'none', 'stroke': '#c0eb34'}}],
+                    ['path', {'attrs': {'d': 'M 303 140 L 316.04 140 M 389.96 140 L 403 140', 'fill': 'none', 'stroke': '#c0eb34', 'stroke-miterlimit': '10', 'pointer-events': 	'none'}}],
+                    ['path', {'attrs': {'d': 'M 303 140 L 293 140', 'fill': 'none', 'stroke': '#c0eb34', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': 'M 493 260 L 493 20', 'fill': 'none', 'stroke': '#43a0c4', 'stroke-width': '5', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(4)}}],
+                    ['path', {'attrs': {'d': 'M 533 60 L 607.76 60', 'fill': 'none', 'stroke': '#ff0000', 'stroke-width': '2', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(11)}}],
+                    ['path', {'attrs': {'d': 'M 610.76 60 L 606.76 62 L 607.76 60 L 606.76 58 Z', 'fill': '#ff0000', 'stroke': '#ff0000', 'stroke-width': '2', 'stroke-miterlimit': 	'10', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': 'M 538.24 220 L 613 220', 'fill': 'none', 'stroke': '#ff0000', 'stroke-width': '2', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(13)}}],
+                    ['path', {'attrs': {'d': 'M 535.24 220 L 539.24 218 L 538.24 220 L 539.24 222 Z', 'fill': '#ff0000', 'stroke': '#ff0000', 'stroke-width': '2', 	'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': 'M 653 120 L 653 40', 'fill': 'none', 'stroke': '#43a0c4', 'stroke-width': '5', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(5)}}],
+                    ['path', {'attrs': {'d': 'M 653 240 L 653 160', 'fill': 'none', 'stroke': '#43a0c4', 'stroke-width': '5', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(6)}}],
+                    ['path', {'attrs': {'d': 'M 607.76 180 L 593.03 180 L 593.03 100 L 613 100', 'fill': 'none', 'stroke': '#ff0000', 'stroke-width': '2', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(12)}}],
+                    ['path', {'attrs': {'d': 'M 610.76 180 L 606.76 182 L 607.76 180 L 606.76 178 Z', 'fill': '#ff0000', 'stroke': '#ff0000', 'stroke-width': '2', 	'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': 'M 653 80 L 683 80', 'fill': 'none', 'stroke': '#ffffff', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['ellipse', {'attrs': {'cx': '693', 'cy': '80', 'rx': '10', 'ry': '10', 'fill': '#ffffff', 'stroke': '#181f1a', 'pointer-events': 'none'}}],
 
-                    ['path', {'attrs': {'d': 'M 653 180 L 683 180', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['ellipse', {'attrs': {'cx': '693', 'cy': '180', 'rx': '10', 'ry': '10', 'fill': '#ffffff', 'stroke': '#000000', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': 'M 653 180 L 683 180', 'fill': 'none', 'stroke': '#ffffff', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['ellipse', {'attrs': {'cx': '693', 'cy': '180', 'rx': '10', 'ry': '10', 'fill': '#ffffff', 'stroke': '#181f1a', 'pointer-events': 'none'}}],
 
-                    ['path', {'attrs': {'d': 'M 653 220 L 700.76 220', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
-                    ['path', {'attrs': {'d': 'M 688.88 226.5 L 701.88 220 L 688.88 213.5', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 	'none'}}],
-                    ['path', {'attrs': {'d': 'M 413 180 L 413 100', 'fill': 'none', 'stroke': '#000000', 'stroke-width': '5', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(3)}}],
-                    ['path', {'attrs': {'d': 'M 413 140 L 403 140', 'fill': 'none', 'stroke': '#000000', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': 'M 653 220 L 700.76 220', 'fill': 'none', 'stroke': '#ffffff', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
+                    ['path', {'attrs': {'d': 'M 688.88 226.5 L 701.88 220 L 688.88 213.5', 'fill': 'none', 'stroke': '#ffffff', 'stroke-miterlimit': '10', 'pointer-events': 	'none'}}],
+                    ['path', {'attrs': {'d': 'M 413 180 L 413 100', 'fill': 'none', 'stroke': '#43a0c4', 'stroke-width': '5', 'stroke-miterlimit': '10'}, on : { click: () => changeTableVisibility(3)}}],
+                    ['path', {'attrs': {'d': 'M 413 140 L 403 140', 'fill': 'none', 'stroke': '#c0eb34', 'stroke-miterlimit': '10', 'pointer-events': 'none'}}],
 
-                    ['rect', {'attrs': {'x': '580', 'y': '280', 'width': '60', 'height': '35', 'fill': '#ff7f0e', 'stroke': '#000000'}, on : { click: () => refreshPlot()}}],
+                    ['rect', {'attrs': {'x': '580', 'y': '280', 'width': '60', 'height': '35', 'fill': '#ff7f0e', 'stroke': '#ffffff'}, on : { click: () => refreshPlot()}}],
 
                     longSwitches,
 
@@ -332,7 +331,7 @@ export function vt() {
 
     return  ['div.main',
                 // svg 
-                ['svg', {'attrs': {'version': '1.1', 'width': '1700px', 'height': '800px', 'viewBox': '-0.5 -0.5 774 302', 'style': 'background-color: rgb(255, 255, 255);'}},
+                ['svg', {'attrs': {'version': '1.1', 'width': '1700px', 'height': '800px', 'viewBox': '-0.5 -0.5 774 302', 'style': 'background-color: #181f1a;'}},
                     linesDiv,
                     // text div is already in it's 'g' container
                     textDiv,
@@ -342,7 +341,7 @@ export function vt() {
                     tableDiv
                 ],
                 // plot
-                ['div.class5',
+                ['div.plot_div',
                     plotDiv
                 ],
             ];

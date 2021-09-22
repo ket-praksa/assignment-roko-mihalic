@@ -5,10 +5,10 @@ html, body, input, textarea, select, button {
 html, body {
     font-size: 10pt;
     margin: 0px;
+    background-color: #181f1a;
 }
 div.main {
     height:90%;
-    //width: 90%;
     justify-content: center;
     margin: 0 auto;
 }
@@ -31,7 +31,7 @@ div.class4 {
 }
 svg {
     align-self: center;
-    margin-left: 30px;
+    margin-left: 90px;
 }
 text.title{
     font-size: 60px;
@@ -39,7 +39,7 @@ text.title{
 }
 div.table_div {
     margin-top: 20px;
-    margin-left: 30px;
+    margin-left: 90px;
     align-self: center;
     margin-bottom: 50px;
     width: 1650px;
@@ -47,22 +47,19 @@ div.table_div {
     flex-direction: column;
     text-align: center;
     font-size: large;
-//block-size: 50px;
 }
 
-th {
-    font-size: x-large;
-}
 td, th {
-    border: 1px black solid;
+    font-size: x-large;
+    border: 1px white solid;
+    color: white;
 }
-div.class5 {
+div.plot_div {
     align-items: center;
     width: 1700px;
     margin-top: 20px;
-    margin-left: 30px;
+    //margin-left: 30px;
     padding-right: 50px;
-    //margin-right: 30px;
     margin-bottom: 50px;
-    border: 3px black solid;
+    //border: 3px black solid;
 }

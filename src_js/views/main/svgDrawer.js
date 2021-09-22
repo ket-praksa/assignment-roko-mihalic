@@ -5,7 +5,7 @@ export function getText() {
                 "width" : 18,
                 "padding" : 80,
                 "margin" : 684,
-                "color-fill" : '#000000',
+                "color-fill" : '#181f1a',
                 "text" :  'G',
                 "x" : '693'
             },
@@ -14,7 +14,7 @@ export function getText() {
                 "width" : 18,
                 "padding" : 180,
                 "margin" : 684,
-                "color-fill" : '#000000',
+                "color-fill" : '#181f1a',
                 "text" :  'G',
                 "x" : '693'
             },
@@ -23,7 +23,7 @@ export function getText() {
                 "width" : 38,
                 "padding" : 90,
                 "margin" : 74,
-                "color-fill" : '#000000',
+                "color-fill" : '#43a0c4',
                 "text" :  '0',
                 "x" : '93'
             },
@@ -32,7 +32,7 @@ export function getText() {
                 "width" : 38,
                 "padding" : 90,
                 "margin" : 194,
-                "color-fill" : '#000000',
+                "color-fill" : '#43a0c4',
                 "text" :  '1',
                 "x" : '213'
             },
@@ -41,7 +41,7 @@ export function getText() {
                 "width" : 38,
                 "padding" : 90,
                 "margin" : 274,
-                "color-fill" : '#000000',
+                "color-fill" : '#43a0c4',
                 "text" :  '2',
                 "x" : '293'
             },
@@ -50,7 +50,7 @@ export function getText() {
                 "width" : 38,
                 "padding" : 90,
                 "margin" : 394,
-                "color-fill" : '#000000',
+                "color-fill" : '#43a0c4',
                 "text" :  '3',
                 "x" : '413'
             },
@@ -59,7 +59,7 @@ export function getText() {
                 "width" : 38,
                 "padding" : 10,
                 "margin" : 474,
-                "color-fill" : '#000000',
+                "color-fill" : '#43a0c4',
                 "text" :  '4',
                 "x" : '493'
             },
@@ -68,7 +68,7 @@ export function getText() {
                 "width" : 38,
                 "padding" : 30,
                 "margin" : 634,
-                "color-fill" : '#000000',
+                "color-fill" : '#43a0c4',
                 "text" :  '5',
                 "x" : '653'
             },
@@ -77,7 +77,7 @@ export function getText() {
                 "width" : 38,
                 "padding" : 150,
                 "margin" : 634,
-                "color-fill" : '#000000',
+                "color-fill" : '#43a0c4',
                 "text" :  '6',
                 "x" : '653'
             },
@@ -86,7 +86,7 @@ export function getText() {
                 "width" : 38,
                 "padding" : 230,
                 "margin" : 125,
-                "color-fill" : '#000000',
+                "color-fill" : '#ffffff',
                 "text" :  'Bus ID',
                 "x" : '125'
             },
@@ -131,7 +131,7 @@ export function getText() {
                 "width" : 48,
                 "padding" : 260,
                 "margin" : 125,
-                "color-fill" : '#000000',
+                "color-fill" : '#ffffff',
                 "text" :  'Line ID',
                 "x" : '125'
             },
@@ -212,7 +212,7 @@ export function getText() {
                 "width" : 78,
                 "padding" : 290,
                 "margin" : 125,
-                "color-fill" : '#000000',
+                "color-fill" : '#ffffff',
                 "text" :  'Switch ID',
                 "x" : '125'
             },
@@ -221,7 +221,7 @@ export function getText() {
                 "width" : 38,
                 "padding" : 190,
                 "margin" : 74,
-                "color-fill" : '#000000',
+                "color-fill" : '#ffffff',
                 "text" :  'Bus',
                 "x" : '93'
             },
@@ -230,7 +230,7 @@ export function getText() {
                 "width" : 38,
                 "padding" : 150,
                 "margin" : 134,
-                "color-fill" : '#000000',
+                "color-fill" : '#ffffff',
                 "text" :  'Line',
                 "x" : '153'
             },
@@ -239,7 +239,7 @@ export function getText() {
                 "width" : 38,
                 "padding" : 150,
                 "margin" : 234,
-                "color-fill" : '#000000',
+                "color-fill" : '#ffffff',
                 "text" :  'Switch',
                 "x" : '253'
             },
@@ -248,7 +248,7 @@ export function getText() {
                 "width" : 38,
                 "padding" : 110,
                 "margin" : 334,
-                "color-fill" : '#000000',
+                "color-fill" : '#ffffff',
                 "text" :  'Trafo',
                 "x" : '353'
             },
@@ -257,7 +257,7 @@ export function getText() {
                 "width" : 38,
                 "padding" : 235,
                 "margin" : 344,
-                "color-fill" : '#000000',
+                "color-fill" : '#ffffff',
                 "text" :  'Shunt',
                 "x" : '363'
             },
@@ -266,7 +266,7 @@ export function getText() {
                 "width" : 38,
                 "padding" : 270,
                 "margin" : 364,
-                "color-fill" : '#000000',
+                "color-fill" : '#ffffff',
                 "text" :  'Ground',
                 "x" : '383'
             },
@@ -275,7 +275,7 @@ export function getText() {
                 "width" : 58,
                 "padding" : 80,
                 "margin" : 714,
-                "color-fill" : '#000000',
+                "color-fill" : '#ffffff',
                 "text" :  'Generator',
                 "x" : '743'
             },
@@ -284,7 +284,7 @@ export function getText() {
                 "width" : 38,
                 "padding" : 220,
                 "margin" : 714,
-                "color-fill" : '#000000',
+                "color-fill" : '#ffffff',
                 "text" :  'Load',
                 "x" : '733'
             },
@@ -293,7 +293,7 @@ export function getText() {
                 "width" : 38,
                 "padding" : 160,
                 "margin" : 4,
-                "color-fill" : '#000000',
+                "color-fill" : '#ffffff',
                 "text" :  'External grid',
                 "x" : '23'
             },
@@ -302,7 +302,7 @@ export function getText() {
                 "width" : 38,
                 "padding" : 298,
                 "margin" : 592,
-                "color-fill" : '#000000',
+                "color-fill" : '#ffffff',
                 "text" :  'Refresh plot',
                 "x" : '611'
             }
@@ -362,7 +362,7 @@ export function getLegend(){
     return [
            {
                   'y': '220',
-                  'fill': '#000000'
+                  'fill': '#43a0c4'
            },
            {
                   'y': '250',
